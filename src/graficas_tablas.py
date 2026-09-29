@@ -5,6 +5,8 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mtick
+from matplotlib.lines import Line2D
+from matplotlib.patches import Patch
 import numpy as np
 from openpyxl import Workbook
 from openpyxl.styles import Alignment, Font, PatternFill
@@ -66,7 +68,11 @@ for ax, (titulo, idxs) in zip(axes, grupos):
     ax.yaxis.set_major_formatter(mtick.StrMethodFormatter("{x:,.0f} M"))
     ax.set_xlim(1, 46)
     ax.tick_params(labelleft=True)
-    ax.legend(loc="upper left", frameon=False, fontsize=9)
+    handles, labels = ax.get_legend_handles_labels()
+    handles += [Line2D([], [], color=ROJO, lw=2, ls=":"),
+                Line2D([], [], color=GRIS, lw=1, ls="--")]
+    labels += ["Caída al retiro: corretaje (VUAA) e ISR", "Año 25: bono PPR acreditado"]
+    ax.legend(handles, labels, loc="upper left", frameon=False, fontsize=8.2)
 fig.suptitle("Saldo antes de retiro (línea) y neto tras venta e ISR (punto) — PPR vs VUAA · 5,000 MXN/mes · 40 años",
              fontsize=11, fontweight="bold")
 axes[0].set_ylabel("Millones MXN (nominales)")
@@ -80,8 +86,8 @@ y = np.arange(len(orden))
 netos = [ESCENARIOS[i][1]["neto"] / M for i in orden]
 imps = [ESCENARIOS[i][1]["impuesto"] / M for i in orden]
 colores = [estilo[i][0] for i in orden]
-ax.barh(y, netos, color=colores, label="Neto tras impuestos")
-ax.barh(y, imps, left=netos, color=ROJO, alpha=0.85, label="ISR al retirar")
+ax.barh(y, netos, color=colores)
+ax.barh(y, imps, left=netos, color=ROJO, alpha=0.85)
 for yi, n, im in zip(y, netos, imps):
     ax.text(n + im + 0.6, yi, f"neto \\${n:.1f}M  (ISR \\${im:.1f}M)", va="center", fontsize=9)
 ax.set_yticks(y)
@@ -91,9 +97,12 @@ ax.invert_yaxis()
 ax.xaxis.set_major_formatter(mtick.StrMethodFormatter("{x:,.0f} M"))
 ax.set_xlabel("Millones MXN al año 40")
 ax.set_title("Saldo final al año 40: lo que queda en tu bolsillo tras el ISR de salida", fontsize=11, fontweight="bold")
-ax.legend(loc="lower right", frameon=False)
+leyenda_02 = [Patch(facecolor=color, label=etiqueta) for color, etiqueta, _ in ESTILOS]
+leyenda_02.append(Patch(facecolor=ROJO, alpha=0.85, label="ISR al retirar"))
 ax.set_xlim(0, max(n + i for n, i in zip(netos, imps)) * 1.35)
-fig.tight_layout()
+fig.legend(handles=leyenda_02, loc="lower center", bbox_to_anchor=(0.5, 0.01),
+           ncol=3, frameon=False, fontsize=8.5)
+fig.tight_layout(rect=(0, 0.11, 1, 1))
 fig.savefig(OUT / "02_neto_tras_impuesto.png", dpi=150)
 plt.close(fig)
 

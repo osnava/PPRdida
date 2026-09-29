@@ -146,8 +146,9 @@ equivalen a unos $5.2M de hoy.
 
 ![Saldo final al año 40 y el ISR de salida, por escenario](outputs/graficas/02_neto_tras_impuesto.png)
 
-Cada barra es el saldo final: el color es lo que te queda y el rojo, el ISR al
-retirar. Con peso estable, el VUAA con el mismo bolsillo termina en $25.1M; el
+Cada barra separa el neto recibido del ISR al retirar: azul = PPR al tope,
+naranja = PPR a mitad, verdes = las dos formas de aportar al VUAA y rojo = ISR.
+Con peso estable, el VUAA con el mismo bolsillo termina en $25.1M; el
 PPR, en $23.2M con cargos a mitad del tope y en $19.2M con cargos al tope. El
 PPR al tope casi no paga ISR ($0.2M) porque el retiro único está exento hasta
 90 UMA anuales (~$18.5M al año 40).
@@ -179,7 +180,8 @@ alternativas de inversión reales no replican el índice.)
 ![Evolución del saldo antes de retiro y neto final](outputs/graficas/01_evolucion_saldos.png)
 
 Las líneas son el saldo del fondo antes de un retiro (el Fondo de Bono no cuenta
-antes del año 25) y el punto final es lo que queda tras la venta y el ISR. Antes
+antes del año 25) y el punto final es lo que queda tras la venta y el ISR. La
+línea roja punteada une ambos valores. Antes
 del año 25, la línea del PPR **no es el valor de rescate**: faltan los cargos por
 retiro anticipado de la cláusula 3.14.2. Durante los primeros 25 años las
 curvas casi se enciman; el PPR a mitad de tope incluso va un poco
@@ -224,8 +226,9 @@ ajustado por inflación, durante 30 años. Este contrato exige retirar el PPR de
 una sola vez y en su totalidad (CG 3.21), así que su neto se reinvierte en VUAA.
 La regla fiscal 3.17.6 RMF contempla retiros periódicos para otros PPR, pero esa
 modalidad no aparece en las Condiciones Generales de este producto. Todo está en
-pesos de hoy: el color sólido es lo que retiras en 30 años y el claro, lo que
-queda de herencia a los 95. La etiqueta «retiro neto año 1» ya descuenta el ISR.
+pesos de hoy: verdes = VUAA, azul y naranja = PPR; en cada color, el tono intenso
+es lo que retiras en 30 años y el claro, lo que queda de herencia a los 95. La
+etiqueta «retiro neto año 1» ya descuenta el ISR.
 Esta fase simplifica los costos futuros: no cobra OCF ni corretaje durante esos
 30 años ni al reinvertir el PPR.
 

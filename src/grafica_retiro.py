@@ -6,6 +6,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mtick
+from matplotlib.patches import Patch
 
 from sim_ppr_vs_vuaa import FX
 
@@ -26,8 +27,8 @@ for k, (ax, (_, fx)) in enumerate(zip(axes, FX)):
     retiros = [d["neto_hoy"] / 1e6 for d in grupo]
     legados = [(d["legado_hoy"] - d["latente_hoy"]) / 1e6 for d in grupo]
     y = range(len(grupo))
-    ax.barh(y, retiros, color=colores, label="Retiros netos 65→95 (pesos de hoy)")
-    ax.barh(y, legados, left=retiros, color=colores, alpha=0.45, label="Legado año 70 neto de ISR latente (pesos de hoy)")
+    ax.barh(y, retiros, color=colores)
+    ax.barh(y, legados, left=retiros, color=colores, alpha=0.45)
     for yi, d, r, l in zip(y, grupo, retiros, legados):
         ax.text(r + l + 0.4, yi, f"\\${r + l:.1f}M\nretiro neto año 1: \\${d['retiro_anio1_neto_hoy'] / 1e3:,.0f}k/año"
                                  f"\nISR fase: \\${d['isr_hoy'] / 1e6:.2f}M", va="center", fontsize=8.5)
@@ -42,10 +43,11 @@ axes[1].tick_params(labelleft=False)
 
 fig.suptitle("Fase de retiro con la regla del 4% (65→95 años) · riqueza total en pesos de hoy",
              fontsize=11, fontweight="bold")
-fig.tight_layout()
-# leyenda de figura después del layout: anclada a un eje, tight_layout la cuenta como parte del panel y los separa
-fig.legend(*axes[0].get_legend_handles_labels(), loc="upper center", bbox_to_anchor=(0.5, 0.0),
-           ncol=2, frameon=False, fontsize=9)
-fig.savefig(OUT / "05_fase_retiro_4pct.png", dpi=150, bbox_inches="tight")
+fig.tight_layout(rect=(0, 0.15, 1, 1))
+fig.text(0.5, 0.085, "En cada escenario: tono intenso = retiros netos 65→95; tono claro = legado año 70 neto de ISR latente",
+         ha="center", fontsize=9)
+fig.legend(handles=[Patch(facecolor=color, label=nombre) for nombre, color in COLOR.items()],
+           loc="lower center", bbox_to_anchor=(0.5, 0.005), ncol=4, frameon=False, fontsize=9)
+fig.savefig(OUT / "05_fase_retiro_4pct.png", dpi=150)
 plt.close(fig)
 print("OK:", OUT / "05_fase_retiro_4pct.png")
