@@ -1,0 +1,20 @@
+# Entorno virtual
+.venv/
+
+# Artefactos regenerables del índice RAG
+index/
+.audit/
+
+# Python
+__pycache__/
+*.pyc
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Bitácora interna de la investigación (no se publica)
+NOTES.md
+
+# PDF oficial de Allianz: derechos de autor; cómo descargarlo en README §7
+data/raw/
