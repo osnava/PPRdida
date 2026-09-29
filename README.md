@@ -144,10 +144,11 @@ equivalen a unos $5.2M de hoy.
 
 ### 5.1. Lo que te llevas a los 65
 
-![Saldo final al año 40 y el ISR de salida, por escenario](outputs/graficas/02_neto_tras_impuesto.png)
+![Barras del neto al año 40 por escenario, con el ISR de salida en rojo](outputs/graficas/02_neto_tras_impuesto.png)
 
 Cada barra separa el neto recibido del ISR al retirar: azul = PPR al tope,
-naranja = PPR a mitad, verdes = las dos formas de aportar al VUAA y rojo = ISR.
+naranja = PPR a mitad, verde oscuro = VUAA con los mismos aportes, verde claro =
+VUAA con el mismo bolsillo y rojo = ISR.
 Con peso estable, el VUAA con el mismo bolsillo termina en $25.1M; el
 PPR, en $23.2M con cargos a mitad del tope y en $19.2M con cargos al tope. El
 PPR al tope casi no paga ISR ($0.2M) porque el retiro único está exento hasta
@@ -159,14 +160,16 @@ PPR al tope casi no paga ISR ($0.2M) porque el retiro único está exento hasta
 
 ### 5.2. Por qué el PPR se queda atrás: las comisiones
 
-![Cargos cobrados por el PPR contra su costo real](outputs/graficas/06_comisiones_durante_plazo.png)
+![Áreas de cargos cobrados y líneas del costo real para PPR y VUAA](outputs/graficas/06_comisiones_durante_plazo.png)
 
-Las áreas son lo que te cobra Allianz, acumulado año con año (cargos al tope);
-las líneas son el costo real, es decir, lo que tendrías de más si esos pesos se
-hubieran quedado invertidos. El 85% del cobro es el cargo de gestión: 0.1% al
-mes sobre todo tu fondo, que suena a poco pero equivale a ~1.4% al año durante
-40 años. El Bono de Fidelidad, la bonificación parcial de cargos, vale $46k al
-año 25. (El modelo supone que el PPR rinde lo mismo que el S&P 500; sus
+Las áreas apiladas son los cargos del PPR al tope cobrados hasta cada año:
+azul = administrativo, naranja = gestión y morado = fijo. Las líneas muestran
+el costo real, es decir, el saldo que falta porque esos cargos dejaron de
+invertirse: línea azul oscuro continua = PPR al tope, línea azul oscuro
+discontinua = PPR a mitad y línea verde = VUAA. El 85% del cobro es el cargo de
+gestión: 0.1% al mes sobre todo tu fondo, que suena a poco pero equivale a ~1.4%
+al año durante 40 años. El Bono de Fidelidad, la bonificación parcial de cargos,
+vale $46k al año 25. (El modelo supone que el PPR rinde lo mismo que el S&P 500; sus
 alternativas de inversión reales no replican el índice.)
 
 > **En corto:** en 40 años le pagarías a Allianz $3.4M en comisiones por
@@ -177,14 +180,17 @@ alternativas de inversión reales no replican el índice.)
 
 ### 5.3. Cuándo se abre la diferencia
 
-![Evolución del saldo antes de retiro y neto final](outputs/graficas/01_evolucion_saldos.png)
+![Líneas del saldo antes del retiro y puntos del neto final](outputs/graficas/01_evolucion_saldos.png)
 
 Las líneas son el saldo del fondo antes de un retiro (el Fondo de Bono no cuenta
-antes del año 25) y el punto final es lo que queda tras la venta y el ISR. La
-línea roja punteada une ambos valores. Antes
-del año 25, la línea del PPR **no es el valor de rescate**: faltan los cargos por
-retiro anticipado de la cláusula 3.14.2. Durante los primeros 25 años las
-curvas casi se enciman; el PPR a mitad de tope incluso va un poco
+antes del año 25): azul = PPR al tope, naranja = PPR a mitad, verde oscuro =
+VUAA con los mismos aportes y verde claro discontinuo = VUAA con el mismo
+bolsillo. El punto final de cada color es el neto tras vender o retirar; la línea
+roja punteada muestra su diferencia respecto al saldo previo y la gris marca el
+año 25, cuando se acredita el bono. Antes de ese año, la línea del PPR **no es
+el valor de rescate**: faltan los cargos por retiro anticipado de la cláusula
+3.14.2. Durante los primeros 25 años las curvas casi se enciman; el PPR a mitad
+de tope incluso va un poco
 arriba porque recibe la devolución del SAT. Después, las comisiones cobradas
 sobre un saldo cada vez más grande abren la brecha.
 
@@ -194,24 +200,25 @@ sobre un saldo cada vez más grande abren la brecha.
 
 ### 5.4. De dónde sale tu dinero
 
-![Composición del saldo final](outputs/graficas/03_composicion_saldo.png)
+![Composición del dinero neto recibido al retirar](outputs/graficas/03_composicion_saldo.png)
 
 Gris es lo aportado, naranja el Bono de Fidelidad y verde el crecimiento después
 de cargos, venta e ISR; la barra completa es el dinero neto que recibes.
-Lo aportado es solo 9 a 15 de cada 100 pesos del neto: casi
-todo es rendimiento compuesto. En el PPR lo aportado pesa más en el total
-porque las comisiones se comieron parte del crecimiento.
+La línea gris discontinua separa los dos escenarios de tipo de cambio. Lo
+aportado es solo 9 a 15 de cada 100 pesos del neto: casi todo es rendimiento
+compuesto. En el PPR lo aportado pesa más en el total porque las comisiones se
+comieron parte del crecimiento.
 
 > **En corto:** de cada 100 pesos que tendrás a los 65, entre 85 y 91 los genera
 > el mercado; el Bono de Fidelidad del PPR aporta cerca de 1.
 
 ### 5.5. Cuánto rinde cada peso tuyo
 
-![Desembolso de tu bolsillo contra lo que te llevas](outputs/graficas/04_bolsillo_vs_neto.png)
+![Barras grises del desembolso y turquesas del neto por escenario](outputs/graficas/04_bolsillo_vs_neto.png)
 
 Gris es lo que sale de tu bolsillo en 40 años: $2.40M, o $2.95M si en el VUAA
-pones también el equivalente de la devolución. Verde es lo que te llevas después
-del ISR.
+pones también el equivalente de la devolución. Turquesa es lo que te llevas
+después del ISR.
 
 > **En corto:** por cada peso que sale de tu bolsillo, el VUAA te regresa $10.5
 > y el PPR entre $8.0 y $9.6 con peso estable ($16.4 contra $10.9 a $13.5 si el
@@ -219,16 +226,18 @@ del ISR.
 
 ### 5.6. Cuánto te paga al retirarte
 
-![Fase de retiro con la regla del 4%](outputs/graficas/05_fase_retiro_4pct.png)
+![Retiros netos en tono intenso y legado en tono claro para cuatro escenarios](outputs/graficas/05_fase_retiro_4pct.png)
 
 En vez de sacar todo a los 65, retiras cada año el 4% del saldo inicial,
 ajustado por inflación, durante 30 años. Este contrato exige retirar el PPR de
 una sola vez y en su totalidad (CG 3.21), así que su neto se reinvierte en VUAA.
 La regla fiscal 3.17.6 RMF contempla retiros periódicos para otros PPR, pero esa
 modalidad no aparece en las Condiciones Generales de este producto. Todo está en
-pesos de hoy: verdes = VUAA, azul y naranja = PPR; en cada color, el tono intenso
-es lo que retiras en 30 años y el claro, lo que queda de herencia a los 95. La
-etiqueta «retiro neto año 1» ya descuenta el ISR.
+pesos de hoy: verde oscuro = VUAA con los mismos aportes, verde claro = VUAA con
+el mismo bolsillo, azul = PPR al tope y naranja = PPR a mitad. En cada color,
+el tono intenso es lo que retiras en 30 años y el claro, la herencia a los 95
+años, una vez descontado el ISR latente. La etiqueta «retiro neto año 1» ya
+descuenta el ISR.
 Esta fase simplifica los costos futuros: no cobra OCF ni corretaje durante esos
 30 años ni al reinvertir el PPR.
 
