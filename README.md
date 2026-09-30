@@ -114,6 +114,16 @@ pensiones (AFORE, IMSS) — que dejamos para la sección formal ([RMF 2026,
 regla 3.17.6, frs. III y V][rmf]; [RLISR, art. 171][rlisr]; [INEGI, UMA
 2026][uma]; [resultados del modelo][resultados]).
 
+**Fin del plazo no significa retiro libre de ISR.** Al terminar el Plazo
+Comprometido se elimina el cargo de retiro de Allianz, pero la póliza dice
+expresamente que el retiro queda sujeto a los impuestos aplicables
+([CG, §3.14.3][cg]). Si el titular aún no tiene 65 años, el retiro del PPR
+Art. 151 sigue el régimen fiscal anticipado ([CG, §3.21.2][cg];
+[LISR, art. 151, fr. V][lisr151]). A los 65, el retiro único sólo queda
+íntegramente exento si cabe en la exención disponible, que puede estar
+compartida con otras pensiones ([RMF 2026, regla 3.17.6][rmf]). Los importes
+de ISR de este estudio son estimaciones, no una liquidación fiscal individual.
+
 ## 4. El resultado formal
 
 Con todo lo anterior montado en un modelo mensual (480 meses, tarifa ISR 2026,
@@ -424,7 +434,7 @@ pagos mensuales del titular y no se deduce por segunda vez al reinvertirla
 exhibición una vez cumplidos los requisitos de permanencia (65 años o
 invalidez); exento hasta 90 UMA elevadas al año
 (~$3.85M en 2026, crece con la UMA). El caso base aplica la tarifa anual 2026
-congelada al excedente; el art. 171 remite al [art. 95 LISR][lisr95] y se
+congelada al excedente como aproximación; el art. 171 remite al [art. 95 LISR][lisr95] y se
 muestra como
 sensibilidad parametrizada ([`sim_sensibilidad_fiscal.py`][sensibilidad], 24 cruces:
 exención consumida 0/50/100% × método tarifa/95 × tipo de cambio; pendiente de
