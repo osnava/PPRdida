@@ -1,409 +1,410 @@
 # PPR OptiMaxx plus (Allianz) vs ETF VUAA — Análisis a 40 años
 
-Investigación financiera personal: ¿conviene ahorrar para el retiro con el
-**Plan Personal de Retiro OptiMaxx plus Art. 151 de Allianz México** o comprar
-el **ETF VUAA** (Vanguard S&P 500 UCITS, acumulación) en la Bolsa Mexicana de Valores?
+¿Conviene ahorrar para el retiro con el **Plan Personal de Retiro OptiMaxx plus
+Art. 151 de Allianz México** o comprar el **ETF VUAA** (Vanguard S&P 500 UCITS,
+acumulación) en la Bolsa Mexicana de Valores? Este repositorio responde con un
+caso simulado, las Condiciones Generales (CG) del producto y un modelo mensual
+reproducible.
 
-Este README avanza de lo concreto a lo formal: empieza con una explicación
-intuitiva y números concretos, y deja para el final las definiciones formales
-(cláusulas del contrato, artículos de ley y parámetros del modelo). Si ya
-dominas el tema, salta a la tabla de resultados.
+## 1. Conclusión del caso simulado
 
-**Cómo leer las citas:** los enlaces a Allianz, Vanguard, BMV y autoridades
-respaldan los datos externos; los enlaces a `src/` y `outputs/` permiten
-reproducir los supuestos y las cifras calculadas. Las proyecciones son resultados
-del modelo, no cifras publicadas ni garantizadas por esas instituciones.
+Con el mismo dinero de tu bolsillo, 5,000 MXN al mes durante 40 años, el VUAA
+termina por encima del PPR en todos los escenarios de cargos simulados: entre
+$1.9M y $5.9M más con peso estable, y entre $7.1M y $13.3M más si el peso se
+deprecia 1.5% al año. Son pesos nominales del año 40; en pesos de 2026, la
+ventaja es de $0.4M–$1.2M y $1.5M–$2.8M. La diferencia viene sobre todo de los
+cargos del PPR. Con peso estable, el PPR solo empataría si cada cargo fuera el
+31% de su tope, el máximo que permite el contrato; con la tarifa que publica el
+folleto de Allianz, mejora $0.7M frente al tope y sigue $5.2M atrás
+([resultados base][resultados]; [auditoría de empates][auditoria];
+[tarifa del folleto][resultados-folleto]).
 
-## 1. La pregunta, en tres números
+Tres límites acompañan esta conclusión: los cargos efectivos dependen de tu
+póliza, la devolución de ISR depende de tu situación fiscal y las cifras son
+escenarios, no pronósticos. Es un análisis educativo con datos públicos; no es
+asesoría financiera ni fiscal.
 
-El caso concreto: eres asalariado, ganas 50,000 MXN brutos al mes y decides
-ahorrar **5,000 MXN cada mes durante 40 años** para tu retiro. Eso es todo el
-problema. Tres números lo describen:
+## 2. El caso y sus supuestos
 
-- **Lo que pones:** 5,000 × 480 meses = **$2.4 millones** de tu bolsillo.
-- **Lo que tendrías si el dinero no rindiera nada:** esos mismos $2.4M.
-- **Lo que tendrías con el supuesto de 10% nominal anual:** unos **$28.0
-  millones** antes de cargos e impuestos. El 10% es un escenario ilustrativo,
-  no un pronóstico ([parámetros del modelo][modelo]; [índice S&P 500][sp500]).
+| Concepto | Caso base |
+|---|---|
+| Perfil | Asalariado de 25 años con ingreso bruto de 600,000 MXN al año |
+| Aportación | 5,000 MXN al mes durante 40 años (enero de 2026 a los 65 años) |
+| Póliza PPR | Plazo Comprometido de 25 años; después sigue aportando a la misma póliza ([CG, §3.1][cg-md]) |
+| Rendimiento | 10% nominal anual del [S&P 500][sp500] en dólares, **igual para el PPR y el VUAA** |
+| Tipo de cambio | Peso estable (10% anual en MXN) o depreciación de 1.5% anual (11.65% en MXN) |
+| Inflación | 4% anual; convierte las cifras a pesos de 2026 |
+| Cargos del PPR | Escenarios, no la tarifa de una póliza: tope de la CG, mitad de cada tope o tarifa del folleto |
+| Devolución de ISR | $14,112 al año, reinvertida en el PPR cada junio (39 pagos) |
+| Impuestos | Reglas y tarifa del ISR de 2026, congeladas en pesos nominales |
 
-Ese salto es el protagonista de todo el análisis: **el interés compuesto**. De
-cada 100 pesos que tendrías a los 65, solo 9 los pusiste tú; los otros 91 los
-generaría el mercado al reinvertirse los rendimientos.
+Como el rendimiento de mercado es el mismo para ambos, toda la diferencia
+calculada viene de cargos, costos e impuestos. Las alternativas de inversión
+reales del PPR no replican el S&P 500; si rinden distinto, el resultado cambia
+([parámetros del modelo][modelo]).
 
-Dos advertencias sobre esos 91 pesos explican por qué existe este
-documento:
+## 3. El mecanismo: cuánto de lo que crece llega a tu bolsillo
 
-- **Cualquier cargo anual reduce el efecto del interés compuesto.** Un 1.4%
-  anual de comisión no te cuesta solo el 1.4% del saldo final: también pierdes
-  lo que esa comisión habría rendido durante décadas.
-- **$28.0M dentro de 40 años no son $28.0M de hoy.** Con 4% de inflación anual,
-  equivalen a unos **$5.8M de pesos de 2026**. A lo largo del documento verás
-  las cifras de ambas formas: en pesos nominales (del año en que ocurren) y en
-  pesos de hoy (deflactados al 4%). La inflación también indexa varias piezas
-  del rompecabezas fiscal, como veremos.
+Si aportas 5,000 MXN al mes durante 480 meses, pones $2.4M de tu bolsillo. Al 10%
+anual, antes de cargos e impuestos, llegarías a unos **$28.0M**. De cada 100
+pesos de ese saldo, solo 9 los pusiste tú; los otros 91 son rendimientos que
+se reinvirtieron. Eso es el interés compuesto.
 
-## 2. Las dos máquinas
+Entre ese saldo y el dinero que puedes gastar hay una cadena:
 
-Ambas son "máquinas de invertir para el retiro". La diferencia está en el trato
-que te ofrecen.
+> aportas → el dinero crece → los cargos se llevan una parte cada mes → el ISR
+> se lleva otra al retirar → la inflación reduce lo que compra el resto
 
-**El PPR OptiMaxx plus** es un seguro de ahorro con Hacienda de por medio. El
-trato tiene tres partes:
+Cada eslabón resta algo; lo que distingue a un producto de otro es cuánto resta
+en cada eslabón. El PPR añade un eslabón al principio: una devolución de ISR
+que puedes reinvertir.
 
-1. *La deducción reduce tu ISR.* Lo que aportas es deducible: como
-   ganas 600k al año y tu tramo fiscal es del 23.52%, al hacer tu declaración
-   anual disminuye el ISR calculado sobre lo que aportaste. En concreto: aportas
-   60,000 al año → el modelo supone **$14,112 de devolución anual** y que la
-   reinviertes en el PPR. El monto efectivamente devuelto depende de la
-   situación fiscal individual ([LISR, art. 151, fr. V][lisr151];
-   [SAT, Anexo 8 de la RMF 2026, tarifa anual][anexo8];
-   [cálculo y calendario en el modelo][modelo]).
-2. *Allianz te cobra por administrar.* Tres cargos (topes del contrato): uno de
-   0.1% mensual sobre todo tu fondo, uno de 1.5% trimestral sobre tus primeras
-   aportaciones, y uno fijo de 25 UDIS al mes (~$221 antes de IVA con la UDI
-   del 26-sep-2026). El 0.1% mensual parece poco; volveremos a ese efecto
-   ([Allianz México, CG, §3.12][cg]; [Banxico, valor de la UDI][udi]).
-3. *Te condiciona a quedarte.* Te comprometes a aportar durante un plazo de 5
-   a 25 años. Si cumples, te acreditan un "Bono de Fidelidad" (75% de lo
-   aportado el primer año: $45,000 en total); si te sales antes, te cobran
-   los cargos pendientes que se habían diferido
-   ([Allianz México, CG, §§3.1, 3.6 y 3.14.2][cg];
-   [Allianz México, folleto, p. 10][folleto]).
+**Los cargos.** Un peso que pagas de comisión deja de estar invertido: pierdes
+el peso y todo lo que habría rendido. Por eso un cargo anual funciona como un
+rendimiento negativo que también se capitaliza. Con un solo peso:
 
-**Allianz también publica una tarifa concreta en su folleto:** 0.9% trimestral
-de administración sobre el saldo inicial y el bono; 0.1% mensual de gestión
-sobre el saldo total, incluido el bono; y 15 UDIS mensuales desde el mes 19
-sobre el saldo comprometido
-([folletos de Allianz 2023][folleto-2023-cargos] y [2025, p. 11][folleto-cargos]). Está por debajo de los máximos de
-la CG en dos cargos, pero **no equivale al escenario «PPR mitad»**, que reduce
-los tres cargos a la mitad. El folleto se declara un resumen informativo y da
-prevalencia a la CG ([folleto de Allianz, p. 14][folleto-aviso]). Por ello,
-en este estudio no lo consideramos prueba de los cargos de una póliza individual;
-para conocerlos hace falta su desglose por escrito.
+- invertido 40 años al 10% anual, se convierte en $45;
+- con un cargo de ~1.4% anual (la gestión del PPR a su tope, con IVA), en $26.
 
-**El VUAA** es la opción sin aseguradora: un ETF que sigue el índice S&P 500 de
-grandes empresas estadounidenses. Lo compras en la bolsa mexicana a través de
-una casa de bolsa (GBM, Actinver Trade, …). Comprar el ETF no genera la
-devolución del SAT modelada para el PPR ni te compromete a un plazo de
-permanencia. Tu costo: ~0.25% + IVA
-cada vez que compras o vendes y el 0.07%
-anual del fondo (OCF vigente de Vanguard México). En 40 años y con peso estable,
-comprar, mantener y vender suma **$0.27M con el mismo bolsillo** o **$0.33M con
-los mismos aportes**; si el peso se deprecia, $0.39M y $0.48M. El **0.25% de
-corretaje es un supuesto**, no una tarifa universal
-de las casas de bolsa ([Vanguard México, ficha de VUAA][vuaa];
-[BMV, perfil de VUAA][bmv]; [parámetros][modelo]; [costos simulados][resultados]).
+Termina con 43% menos, aunque cada año pagó solo 1.4%.
 
-**¿Cuánto cobra la venta total del ejemplo?** Con peso estable y el mismo
-desembolso de bolsillo, el VUAA llega al año 40 con $27,304,100 antes de
-vender. El modelo cobra 0.25% + 16% de IVA **sobre todo ese saldo**, es decir,
-$79,182 de corretaje; quedan $27,224,918 antes del ISR. Cada compra mensual de
-$5,000 cuesta $14.50. En los 40 años, el desglose de los $271,192 de costos
-modelados es $6,960 de corretaje de compra, $185,050 de OCF y $79,182 de
-corretaje de venta ([cálculo][modelo]; [resultados base][resultados]). El OCF
-reduce el rendimiento dentro del ETF; no es una factura al vender
-([Vanguard, explicación de costos][vanguard-costos]).
+**El ISR al retirar.** Actúa una sola vez, al final, y su tamaño depende de las
+reglas de cada producto.
 
-La tasa de 0.25% se mantiene fija en la simulación. Las plataformas de
-operación por cuenta propia publican escalones para las compraventas:
+**La inflación.** $28.0M dentro de 40 años no son $28.0M de hoy: con 4% anual
+equivalen a unos $5.8M de 2026. Por eso los resultados aparecen en pesos
+nominales del año 40 y en pesos de 2026.
+
+## 4. Qué cambia cada producto
+
+**El PPR OptiMaxx plus** es un seguro de ahorro para el retiro con cuatro reglas:
+
+1. *Devolución de ISR al aportar.* Lo que aportas se resta de tu ingreso
+   gravable. Con 600,000 MXN al año, cada peso que deduces te ahorra 23.52
+   centavos de ISR: es tu tasa marginal en la tarifa anual de 2026. Aportar
+   60,000 al año genera 60,000 × 23.52% = **$14,112** de devolución, que el
+   modelo reinvierte en el PPR. El monto real depende de tu declaración
+   ([LISR, art. 151, fr. V][lisr151]; [SAT, Anexo 8 de la RMF 2026][anexo8]).
+2. *Tres cargos de Allianz.* La CG fija topes, es decir, máximos: gestión de
+   0.1% mensual sobre todo el fondo, administrativo de 1.5% trimestral sobre
+   las aportaciones de los primeros 18 meses, y fijo de 25 UDIS al mes (~$221
+   antes de IVA). El folleto publica una tarifa menor en dos de los tres: 0.9%
+   trimestral, 0.1% mensual y 15 UDIS ([CG, §3.12][cg];
+   [folleto 2025, p. 11][folleto-cargos]).
+3. *Permanencia.* Te comprometes a aportar durante un plazo de 5 a 25 años.
+   Si cumples el plazo, te acreditan un Bono de Fidelidad (75% de la aportación
+   comprometida del primer año: $45,000); si sales antes, pagas cargos de
+   salida ([CG, §§3.1, 3.6 y 3.14.2][cg]).
+4. *Salida.* A los 65 años, este contrato exige retirar todo en una sola
+   exhibición. Ese retiro está exento de ISR hasta 90 UMA anuales, unos $18.5M
+   al año 40, y la exención se comparte con otras pensiones
+   ([CG, §3.21][cg]; [RMF 2026, regla 3.17.6][rmf]).
+
+**El VUAA** es un ETF que replica el S&P 500 y reinvierte los dividendos. Se
+compra en la BMV a través de una casa de bolsa (GBM, Actinver Trade…), no genera
+devolución de ISR ni exige plazo. Cuesta ~0.25% + IVA de corretaje en cada
+compra y venta, un supuesto del modelo, y 0.07% anual dentro del fondo (OCF).
+Al vender pagas 10% de ISR sobre la ganancia ajustada por inflación
+([Vanguard México, ficha de VUAA][vuaa]; [LISR, art. 129][lisr129]).
+
+**Cómo los comparamos:**
+
+- *Mismo bolsillo* (comparación principal): pones 5,000 al mes en cada opción.
+  El PPR recibe además la devolución de $14,112 al año; el VUAA no. Se compara
+  lo que obtienes con el mismo desembolso.
+- *Mismos aportes* (alternativa): el VUAA también recibe $14,112 al año, pero
+  salen de tu bolsillo: $2.95M propios en 40 años, contra $2.40M.
+- *Cargos del PPR:* al tope de la CG y a la mitad de cada tope; la tarifa del
+  folleto está en la sección 6.1.
+
+**Qué pesa más.** Cada eslabón pesa según la cantidad de dinero sobre la que
+actúa y cuántas veces actúa. La devolución agrega $14,112 al año. La gestión se
+cobra sobre todo tu saldo, cada mes, 480 veces. El ISR se cobra una vez, al
+final, y en el PPR con una exención grande. Antes de ver los números ya se
+puede anticipar el resultado: la devolución ayuda, pero la gestión actúa sobre
+una base mucho mayor que la devolución y muchas más veces que el ISR.
+
+## 5. Comparación principal
+
+Neto al año 40, después de vender o retirar y pagar ISR, en millones de MXN:
+
+| Escenario | Peso estable, nominal | Peso estable, pesos de 2026 | Peso −1.5%/año, nominal | Peso −1.5%/año, pesos de 2026 |
+|---|---:|---:|---:|---:|
+| PPR, cargos al tope | 19.2 | 4.00 | 26.1 | 5.43 |
+| PPR, mitad de cada tope | 23.2 | 4.82 | 32.3 | 6.73 |
+| **VUAA, mismo bolsillo** | **25.1** | **5.22** | **39.4** | **8.21** |
+| VUAA, mismos aportes | 30.5 | 6.34 | 47.7 | 9.95 |
+
+Fuente: [resultados base, ocho escenarios][resultados]; la conversión a pesos
+de 2026 usa el 4% de inflación del [modelo][modelo].
+
+### 5.1. No es por el ISR
+
+![Barras del neto al año 40 por escenario, con el ISR de salida en rojo](outputs/graficas/02_neto_tras_impuesto.png)
+
+*Fuente: [resultados base][resultados]; código en [graficas_tablas.py][graficas].*
+
+Con peso estable y cargos al tope, el PPR paga $0.2M de ISR porque casi todo
+su saldo cabe en la exención; el VUAA paga $2.1M. Aun así, el VUAA termina
+$5.9M arriba. Si el peso se deprecia, el saldo del PPR rebasa la exención y su
+ISR sube a $3.8M–$7.2M ([RMF 2026, regla 3.17.6][rmf]; [RLISR, art. 171][rlisr]).
+
+### 5.2. Lo que cuestan los cargos
+
+![Áreas de cargos cobrados y líneas del costo real para PPR y VUAA](outputs/graficas/06_comisiones_durante_plazo.png)
+
+*Fuente: [serie de comisiones][comisiones]; código en
+[sim_comisiones_serie.py][modelo-comisiones].*
+
+Es el ejemplo del peso aplicado a todos tus aportes. Las áreas son los cargos
+cobrados; las líneas, el costo real, es decir, el saldo que falta porque esos
+cargos dejaron de invertirse. Con peso estable y cargos al tope, el modelo
+acumula $3.4M de cargos en 40 años, 85% de ellos por gestión, y un costo real
+de $15.2M: 44% del saldo que tendrías sin cargos. El VUAA con los mismos
+aportes paga $0.33M entre compra, OCF y venta, con un costo real de $0.9M. El
+Bono de Fidelidad vale $46k al acreditarse en el año 25, cerca del 5% de los
+cargos cobrados hasta entonces ([CG, §§3.6 y 3.12][cg]; [auditoría][auditoria]).
+
+### 5.3. Punto de empate
+
+La variable decisiva son los cargos de tu póliza. Con el mismo bolsillo, el
+PPR empata con el VUAA si cada cargo es el 31% de su tope con peso estable, o
+el 11% con peso depreciado ([auditoría de empates][auditoria]). Para comparar
+tu caso con ese umbral, pide a Allianz el desglose por escrito de los cargos de
+tu póliza; no supongas que la carátula los enumera.
+
+## 6. Sensibilidades y escenarios adicionales
+
+### 6.1. Tarifa publicada en el folleto
+
+![Comparación del PPR con cargos al tope, tarifas del folleto y mitad hipotética frente al VUAA con el mismo bolsillo](outputs/graficas/07_tarifa_folleto.png)
+
+*Fuente: [sensibilidad de tarifas][resultados-folleto]; código en
+[grafica_tarifa_folleto.py][grafica-folleto].*
+
+Si el modelo cambia solo las tres tarifas del PPR por las del folleto
+(0.9% trimestral, 0.1% mensual y 15 UDIS, con 16% de IVA supuesto), el PPR
+termina con $19.90M con peso estable y $27.15M con peso depreciado ($4.15M y
+$5.65M de 2026). Mejora $0.71M y $1.05M frente al tope, pero queda $5.18M y
+$12.26M por debajo del VUAA con el mismo bolsillo. La mejora es pequeña porque la
+gestión, el cargo más grande, sigue en su tope. Esta sensibilidad combina las
+tarifas del folleto 2025 con el resto del modelo basado en la CG 2018, incluida
+su interpretación del bono (sección 7); no confirma los cargos de una póliza
+([cálculo reproducible][modelo-folleto]).
+
+### 6.2. Exención compartida con otras pensiones
+
+La exención de 90 UMA se comparte con otras pensiones, como las de AFORE e IMSS
+([RMF 2026, regla 3.17.6, fr. V][rmf]). El caso base supone que está completa.
+Si ya usaste la mitad o toda con otras pensiones, el PPR con cargos al tope y
+peso estable baja de $19.2M a $16.0M o a $12.8M. El estudio también calcula el
+excedente con el método del art. 95; ese cálculo requiere tus datos fiscales y
+queda como sensibilidad ([24 escenarios fiscales][resultados-fiscales];
+[código][sensibilidad]).
+
+### 6.3. Retiro gradual con la regla del 4%
+
+![Retiros netos en tono intenso y legado en tono claro para cuatro escenarios](outputs/graficas/05_fase_retiro_4pct.png)
+
+*Fuente: [resultados de retiro][resultados-retiro]; código en
+[sim_retiro_4pct.py][modelo-retiro].*
+
+En lugar de sacar todo a los 65, esta simulación retira cada año el 4% del
+saldo inicial, ajustado por inflación, durante 30 años. Como el PPR se retira
+en una sola exhibición ([CG, §3.21][cg]), su neto se reinvierte en VUAA. La
+[RMF 2026, regla 3.17.6, fr. IV][rmf] contempla retiros periódicos para otros
+PPR, pero las CG de este producto no incluyen esa modalidad. Con peso estable y
+en pesos de 2026, el VUAA con el mismo bolsillo deja en promedio $17.3k al mes,
+ya con ISR; el PPR, entre $12.7k y $15.3k, es decir, entre 12% y 27% menos.
+Sumando retiros y herencia a los 95 años, la riqueza total es de $17.4M con el
+VUAA, $15.1M con el PPR a la mitad y $12.5M con el PPR al tope. Esta fase no
+cobra OCF ni corretaje después del año 40.
+
+### 6.4. Estrategia híbrida
+
+Otra opción es aportar 5,000 al mes al PPR e invertir la devolución en VUAA en
+lugar de reinvertirla en el PPR. Con el mismo bolsillo, esa estrategia empata
+con el VUAA si cada cargo es el 53% de su tope con peso estable, o el 25% con
+peso depreciado. Con cargos a la mitad y peso estable ya empata: $25.3M contra
+$25.1M ([auditoría][auditoria]).
+
+### 6.5. Otras vistas del caso base
+
+![Líneas del saldo antes del retiro y puntos del neto final](outputs/graficas/01_evolucion_saldos.png)
+
+*Fuente: [resultados base][resultados]; código en [graficas_tablas.py][graficas].*
+
+**Cuándo se abre la diferencia.** Con cargos al tope y peso estable, a los
+20 años el PPR va $0.4M atrás del VUAA con el mismo bolsillo; a los 40, $7.9M
+antes del ISR y $5.9M después. Los cargos pesan poco al principio y mucho al
+final. Antes del año 25, la línea del PPR **no es su valor de rescate**: faltan
+los cargos por retiro anticipado ([CG, §3.14.2][cg]), y el Fondo de Bono solo
+cuenta desde que se acredita.
+
+![Composición del neto: bolsillo, devolución SAT, bono y crecimiento](outputs/graficas/03_composicion_saldo.png)
+
+*Fuente: [resultados base][resultados]; código en [graficas_tablas.py][graficas].*
+
+**De dónde sale tu dinero.** De cada 100 pesos netos, entre 6 y 15 son
+aportaciones y entre 84 y 94 los generó el mercado; en el PPR, el Bono de
+Fidelidad aporta cerca de 1. El PPR recibe $2.95M: $2.40M de tu bolsillo y
+$0.55M de 39 devoluciones. Por cada peso de tu bolsillo, con peso estable, el
+VUAA te devuelve $10.5 y el PPR entre $8.0 y $9.6; si el peso se deprecia,
+$16.4 contra $10.9–$13.5. La [gráfica 04](outputs/graficas/04_bolsillo_vs_neto.png)
+muestra esa relación.
+
+## 7. Referencia técnica
+
+Esta sección sigue el orden de la sección 4 y reúne las cláusulas, normas y
+supuestos para verificar contra las fuentes. El [contrato oficial][cg] también
+está en [Markdown navegable][cg-md] y se puede consultar por sección con el RAG
+(`src/rag.py search`).
+
+**Deducción de aportaciones** ([LISR, art. 151, fr. V][lisr151]; [CG, §3.20][cg]):
+las aportaciones son deducibles hasta el 10% de los ingresos acumulables, sin
+exceder 5 UMA anuales. Con 600k de ingreso y 60k aportados, la devolución es
+60,000 × 23.52% = $14,112 (tarifa anual del ISR de 2026,
+[SAT, Anexo 8 de la RMF 2026][anexo8]). El modelo la calcula sobre los pagos
+mensuales del titular, la reinvierte cada junio y no la deduce por segunda vez
+([modelo][modelo]). La UMA de 2026 procede del [INEGI][uma].
+
+**Cargos del PPR** ([CG, §3.12][cg]; topes «hasta», +16% IVA conforme a la
+[LIVA, art. 1][liva]): administrativo 1.5% trimestral sobre el Fondo Inicial
+(aportaciones de los primeros 18 meses) y sobre el Fondo de Bono durante el
+Plazo Comprometido; gestión 0.1% mensual sobre el fondo total; fijo 25 UDIS/mes
+desde el mes 19. Ambos folletos de Allianz ([2023][folleto-2023-cargos] y
+[2025][folleto-cargos], p. 11) publican 0.9%, 0.1% y 15 UDIS/mes para esos
+mismos cargos, es decir, 60%, 100% y 60% de los topes. Es una tarifa publicada
+para el producto, no una constancia de los cargos de cada póliza: el folleto se
+declara un resumen informativo y da prevalencia a la CG
+([folleto 2025, p. 14][folleto-aviso]). La mitad de cada tope es solo una
+sensibilidad del modelo. Retiro total antes del plazo: cargos diferidos + 1%
+([CG, §3.14.2][cg]); después del plazo, sin cargo de retiro
+([CG, §3.14.3][cg]). El valor inicial de la UDI procede de [Banxico][udi].
+
+**Plazos** ([CG, §3.1][cg]): Plazo Comprometido de 5 a 25 años; Plazo Inicial
+de 18 meses. Solo con un Plazo Comprometido de 25 años se puede seguir
+aportando a la misma póliza después de que termina; con un plazo menor, el
+modelo termina los aportes al vencer (un caso de dos pólizas requiere modelo
+propio; [validación en el modelo][modelo]).
+
+**Bono de Fidelidad** ([CG, §3.6][cg]): 75% de la aportación comprometida del
+**primer año** para 60k anuales y plazo ≥ 20 años. La CG vincula su generación
+a los pagos comprometidos, y el modelo lo interpreta como un reparto
+proporcional durante el plazo ($150/mes durante 300 meses). Los folletos
+[2023][folleto] y [2025][folleto-2025-bono] (p. 10) describen en cambio su
+generación durante el primer año; no respaldan ese reparto de $150/mes. Se
+mantiene la interpretación de la CG, que prevalece. El bono rinde inflación + 5%
+(tope 9%), paga sus propios cargos ([CG, §3.10.3][cg]) y se acredita al cumplir
+el Plazo Comprometido. Desde entonces, el modelo supone que el titular instruye
+invertirlo en la misma alternativa de mercado; por defecto, la cláusula 3.6 lo
+coloca en renta fija de corto plazo hasta recibir instrucciones
+([supuesto implementado][modelo]).
+
+**Otras diferencias entre los folletos y la CG usada:** el folleto 2025 indica
+un plazo mínimo de 10 años y un primer rango de aportación anual de 24,000
+pesos; la CG 2018 y el folleto 2023 indican 5 años y 12,000 pesos
+([CG, §§3.1 y 3.6][cg-md]; folletos, pp. 8 y 10). Los folletos usan «Saldo
+Inicial/Comprometido/Total» en lugar de los fondos de la CG, y su página de
+cargos no explicita IVA. La sensibilidad del folleto conserva la estructura, el
+bono y el IVA del modelo CG 2018; solo sustituye las tres tarifas.
+
+**Salida del PPR** ([CG, §3.21][cg]; [LISR, art. 151, fr. V][lisr151];
+[RMF 2026, regla 3.17.6][rmf]; [RLISR, art. 171][rlisr]): retiro en una sola
+exhibición una vez cumplidos los requisitos de permanencia (65 años o
+invalidez); exento hasta 90 UMA elevadas al año (~$3.85M en 2026; crece con la
+UMA). El caso base aplica al excedente la tarifa anual 2026 congelada. El
+art. 171 remite al [art. 95 LISR][lisr95], cuyo resultado depende también de los
+demás ingresos gravables y del último sueldo mensual; el estudio lo muestra en
+[sim_sensibilidad_fiscal.py][sensibilidad] (24 cruces: exención consumida
+0/50/100% × método tarifa/art. 95 × tipo de cambio; pendiente de validación
+fiscal). Cumplir el Plazo Comprometido elimina el cargo de retiro de Allianz,
+pero no el ISR: la póliza sujeta el retiro a los impuestos aplicables
+([CG, §3.14.3][cg]), y antes de los 65 años aplica el régimen anticipado
+([CG, §3.21.2][cg]). El modelo rechaza retiros del PPR antes de los 65 años.
+
+**Costos del VUAA** ([Vanguard México, ficha de VUAA][vuaa]; [BMV, perfil de
+VUAA][bmv]): OCF de 0.07% anual, que reduce el rendimiento dentro del ETF; no
+es una factura al vender ([Vanguard, explicación de costos][vanguard-costos]).
+El corretaje de 0.25% + IVA por operación es un supuesto, no una tarifa
+universal. Con peso estable y el mismo bolsillo, cada compra mensual de $5,000
+cuesta $14.50, y la venta del año 40 cobra 0.25% + 16% de IVA sobre
+$27,304,100: $79,182. Los $271,192 de costos modelados en 40 años son $6,960 de
+corretaje de compra, $185,050 de OCF y $79,182 de corretaje de venta; con los
+mismos aportes suman $0.33M, y si el peso se deprecia, $0.39M y $0.48M
+([cálculo][modelo]; [resultados base][resultados]). Las plataformas de
+operación por cuenta propia publican escalones de corretaje; el modelo mantiene
+0.25% fijo:
 
 | Plataforma | Historial que determina el escalón | Tasas publicadas, antes de IVA |
 |---|---|---|
 | [GBM Trading México][gbm-tarifas] | Promedio del monto operado en los últimos 3 meses | De 0.25% (hasta $1 millón) a 0.10% (más de $10 millones) |
 | [Actinver Trade][actinver-tarifas] | Monto acumulado de operaciones de capitales en los 30 días anteriores | De 0.25% (hasta $1 millón) a 0.10% (más de $10 millones) |
 
-Estos escalones se basan en operaciones recientes, no en el valor de la cartera
-ni en los depósitos. Por eso, una venta grande en una sola orden no garantiza
-que esa misma venta reciba la tasa más baja. La tabla de Actinver basada en el
-saldo o en el monto de la orden corresponde a su **servicio asesorado de Casa de
-Bolsa**, con otras condiciones ([guía de Actinver, p. 7][actinver-asesorado]). El
-diferencial entre precio de compra y venta (*spread*) tampoco está incluido en
-el modelo ([Vanguard, costos de ETF][vanguard-costos]).
+Estos escalones dependen de operaciones recientes, no del valor de la cartera ni
+de los depósitos; una venta grande en una sola orden no garantiza la tasa más
+baja. La tabla de Actinver basada en el saldo o en el monto de la orden
+corresponde a su **servicio asesorado de Casa de Bolsa**, con otras condiciones
+([guía de Actinver, p. 7][actinver-asesorado]). El diferencial entre precio de
+compra y venta (*spread*) no está en el modelo.
 
-## 3. Las dos trampas del interés compuesto
+**Salida del VUAA** ([LISR, art. 129][lisr129]): el modelo aplica 10%
+definitivo sobre la ganancia, con costo de adquisición actualizado por
+inflación y retención por el intermediario. Es la hipótesis fiscal del estudio
+para la venta bursátil de VUAA en México; confirma su aplicación a tu operación
+con tu intermediario o asesor fiscal ([implementación del cálculo][modelo]).
 
-Aquí está la intuición que este análisis tuvo que construir, porque el sentido
-común falla en ambos sentidos.
+**Supuestos de mercado y parámetros:** rendimiento hipotético del S&P 500 de
+10% nominal anual; peso estable y depreciación anual compuesta de 1.5%
+(1.10 × 1.015 − 1 = 11.65%; con 4% de inflación mexicana, la depreciación es el
+escenario consistente); inflación de 4%, que indexa la UDI, la UMA y el bono.
+La tarifa del ISR y el salario se mantienen congelados nominalmente 40 años;
+indexar la tarifa, como manda el art. 152, le ahorraría al PPR $0.1M–$0.7M
+([LISR, art. 152][lisr152]; [auditoría][auditoria]). Para variar el caso sin
+descoordinar el bono, las aportaciones y la devolución, pasa
+`Parametros(aportacion_mensual=..., ingreso_anual=..., edad_inicial=..., meses=..., mes_inicio=...)`
+a `sim_ppr(..., config=...)` y `sim_vuaa(..., config=...)`. El bono usa la
+tabla de la cláusula 3.6 según la aportación y el plazo ([código fuente][modelo]).
+La hoja «Supuestos» del [Excel de resultados][excel] documenta la fuente de
+cada parámetro.
 
-**Trampa 1: los porcentajes pequeños cuestan fortunas sobre saldos grandes.** El
-cargo de gestión del PPR es 0.1% al mes ≈ 1.4% al año (con IVA). Sobre $5,000
-del primer mes son $70 al año, una cantidad pequeña. Pero tu fondo no se queda
-en $5,000: crece a millones, y el 1.4% se cobra sobre todo el saldo, cada año,
-durante 40 años.
-Resultado del modelo: Allianz te cobra **$3.4M en pesos nominales**… y como
-cada peso cobrado deja de rendir al 10%, el saldo final que dejas de tener es
-**$15.2M — el 44% de lo que tendrías sin cargos**. Esa es la asimetría: te
-quitan un porcentajito, te llevan gran parte de la capitalización
-([Allianz México, CG, §3.12][cg]; [serie de cargos y costo real][comisiones]).
+**No modelado en el caso base:** costo del seguro de fallecimiento, Asesoría
+Discrecional opcional (+1% anual), *spread* del VUAA, pensiones concurrentes y
+cambios de legislación. La fase de retiro del 4% tampoco incorpora OCF ni
+corretaje posteriores al año 40. Las alternativas reales de Allianz pueden
+rendir distinto del S&P 500 supuesto para ambos vehículos.
 
-**Trampa 2 (la simétrica): la ventaja del PPR también crece con el interés
-compuesto, pero es pequeña.** Las 39 devoluciones supuestas de $14,112 se
-reinvierten durante los 40 años y ayudan de verdad, pero no alcanzan a compensar
-la primera trampa. En el modelo, con el mismo bolsillo, el PPR queda entre $1.9M
-y $5.9M por detrás del VUAA con peso estable, o entre $7.1M y $13.3M con una
-depreciación del 1.5% anual, según el escenario de cargos simulado
-([resultados base][resultados]).
+## 8. Fuentes
 
-**¿Y los impuestos al salir?** Es la parte que más se malinterpreta (nosotros
-mismos la sobreestimamos en la primera versión de este análisis). Este contrato
-exige retirar el PPR de una sola vez ([CG, §3.21][cg]). El caso base supone
-**exención de hasta 90 UMA anuales** (unos $18.5M nominales al año 40): con peso
-estable, el PPR paga $0.2M a $2.2M de ISR y el VUAA mismo bolsillo, $2.1M.
-Si el peso se deprecia, el ISR del PPR sube a $3.8M–$7.2M. La conclusión de la
-comparación depende sobre todo de los cargos. Hay un matiz fiscal importante
-que explicamos en la sección formal: la exención se comparte con otras
-pensiones, como las de AFORE e IMSS ([RMF 2026, regla 3.17.6, frs. III y V][rmf];
-[RLISR, art. 171][rlisr];
-[INEGI, UMA 2026][uma]; [resultados del modelo][resultados]).
+Los enlaces a Allianz, Vanguard, BMV y autoridades respaldan condiciones
+contractuales, normas y datos publicados. Los importes a 40 años, las
+comparaciones y las sensibilidades son **cálculos propios** del modelo, no
+cifras publicadas ni garantizadas por esas instituciones. Fuentes consultadas
+para este corte del estudio (septiembre de 2026):
 
-**Fin del plazo no significa retiro libre de ISR.** Al terminar el Plazo
-Comprometido se elimina el cargo de retiro de Allianz, pero la póliza dice
-expresamente que el retiro queda sujeto a los impuestos aplicables
-([CG, §3.14.3][cg]). Si el titular aún no tiene 65 años, el retiro del PPR
-Art. 151 sigue el régimen fiscal anticipado ([CG, §3.21.2][cg];
-[LISR, art. 151, fr. V][lisr151]). A los 65, el retiro único solo queda
-íntegramente exento si cabe en la exención disponible, que puede estar
-compartida con otras pensiones ([RMF 2026, regla 3.17.6][rmf]). Los importes
-de ISR de este estudio son estimaciones, no una liquidación fiscal individual.
+| Emisor y documento | Dato usado | Enlace |
+|---|---|---|
+| Allianz México, *Condiciones Generales OptiMaxx plus Art. 151*, CNSF S0003-0247-2018 | Plazos, bono, cargos y retiros, §§3.1, 3.6, 3.10.3, 3.12, 3.14 y 3.21 | [PDF oficial][cg] · [transcripción del repo][cg-md] |
+| Allianz México, *Folleto OptiMaxx plus*, edición 2023 (fecha según metadatos del PDF; sin año impreso) | Bono y generación durante el primer año, p. 10; mismos cargos que en 2025, p. 11 | [Bono][folleto] · [cargos][folleto-2023-cargos] |
+| Allianz México, *Folleto OptiMaxx plus 2025* (año según el nombre del archivo oficial) | Cargos publicados de 0.9% trimestral, 0.1% mensual y 15 UDIS/mes, p. 11; aviso de alcance, p. 14 | [Cargos][folleto-cargos] · [aviso][folleto-aviso] |
+| Cámara de Diputados, *Ley del ISR* | Deducción PPR, venta bursátil, tasa efectiva de separación y tarifa anual: arts. 151, 129, 95 y 152 | [Art. 151][lisr151] · [art. 129][lisr129] · [art. 95][lisr95] · [art. 152][lisr152] |
+| Cámara de Diputados, *Ley del IVA* | Tasa general del 16% aplicada a los cargos | [Art. 1][liva] |
+| SEGOB, *Reglamento de la Ley del ISR* | Exención de retiro único y remisión al art. 95: art. 171 | [Texto oficial][rlisr] |
+| SAT/DOF, *RMF 2026* y *Anexo 8* | Tratamiento del PPR, regla 3.17.6; tarifa anual ISR 2026 | [RMF, regla 3.17.6][rmf] · [Anexo 8, tarifa anual][anexo8] |
+| INEGI, *UMA 2026*; Banxico, *UDI* | UMA diaria de $117.31; UDI de $8.826356 al 26-sep-2026 | [INEGI][uma] · [Banxico][udi] |
+| Vanguard México y BMV, *VUAA* | Fondo acumulativo, índice S&P 500, OCF de 0.07% y presencia en BMV | [Vanguard][vuaa] · [BMV][bmv] |
+| GBM, *Guía de Servicios de Inversión* | Corretaje escalonado de Trading México según el promedio operado en los últimos 3 meses, más IVA | [Guía, p. 19][gbm-tarifas] |
+| Actinver, *Guía de Servicios de Inversión* | Corretaje escalonado de Actinver Trade según operaciones de capitales en los 30 días anteriores, más IVA; servicio asesorado distinto | [Trade, p. 9][actinver-tarifas] · [asesorado, p. 7][actinver-asesorado] |
+| S&P Dow Jones Indices, *S&P 500* | Índice de referencia; el 10% anual de la simulación es un supuesto propio | [Ficha del índice][sp500] |
 
-## 4. El resultado formal
+**Cálculos reproducibles:** [modelo mensual][modelo], [resultados base][resultados],
+[retiro del 4%][resultados-retiro], [serie de comisiones][comisiones],
+[sensibilidad fiscal][resultados-fiscales], [simulación de tarifas del folleto][modelo-folleto],
+[resultados del folleto][resultados-folleto] y [auditoría de correcciones][auditoria].
 
-Con todo lo anterior incorporado en un modelo mensual (480 meses, tarifa del
-ISR de 2026 y dos escenarios de tipo de cambio), esto es lo que queda en tu
-bolsillo en el año 40, neto de ISR. En millones de MXN **nominales**:
+## 9. Cómo reproducir
 
-| Escenario | PPR cargos al tope | PPR mitad de tope | VUAA mismo bolsillo | VUAA mismos aportes |
-|---|---|---|---|---|
-| Peso estable (S&P 10% anual en MXN) | 19.2 | 23.2 | **25.1** | 30.5 |
-| Peso depreciándose 1.5%/año (S&P 11.65%) | 26.1 | 32.3 | **39.4** | 47.7 |
-
-Los mismos saldos, expresados en **millones de pesos de 2026** para descontar
-el efecto de la inflación:
-
-| Escenario | PPR tope | PPR mitad | VUAA mismo bolsillo | VUAA mismos aportes |
-|---|---:|---:|---:|---:|
-| Peso estable | 4.00 | 4.82 | **5.22** | 6.34 |
-| Peso depreciándose 1.5%/año | 5.43 | 6.73 | **8.21** | 9.95 |
-
-Fuente de ambas tablas: [resultados base, ocho escenarios][resultados]; la
-conversión a pesos de 2026 usa el 4% de inflación supuesto en el [modelo][modelo].
-
-**¿Qué cambia con los cargos publicados en el folleto?** Si sustituimos solo
-las tres tarifas del PPR en el mismo modelo, con IVA supuesto de 16% y los
-mismos rendimientos y reglas fiscales, el resultado neto al año 40 es:
-
-| Tipo de cambio | PPR al tope | PPR con tarifas del folleto | PPR mitad hipotética | VUAA mismo bolsillo |
-|---|---:|---:|---:|---:|
-| Peso estable | $19.20M | **$19.90M** | $23.15M | $25.08M |
-| Peso depreciándose 1.5%/año | $26.09M | **$27.15M** | $32.31M | $39.41M |
-
-Son millones de MXN **nominales**. En pesos de 2026, el PPR con tarifas del
-folleto da $4.15M y $5.65M, respectivamente. La mejora frente al tope es
-$0.71M o $1.05M al año 40; aún queda $5.18M o $12.26M por debajo del VUAA
-con el mismo desembolso. La gestión permanece en 0.1% mensual sobre todo el
-saldo, por eso la reducción de los otros dos cargos tiene un efecto acotado.
-Esta es una **sensibilidad que mezcla las tarifas del folleto 2025 con los demás
-supuestos del modelo basado en la CG 2018**. Las versiones también difieren en
-otros términos; esta sensibilidad no confirma los cargos de una póliza individual
-([cálculo reproducible][modelo-folleto]; [resultados completos][resultados-folleto];
-[alcance del folleto][folleto-aviso]).
-
-En particular, los folletos 2023 y 2025 (p. 10) describen la generación del bono
-durante el primer año. El modelo interpreta la [CG, cláusula 3.6][cg-md] como
-generación proporcional durante los 25 años comprometidos ($150/mes en este
-caso); conserva esa interpretación y cambia solo los cargos. Las otras
-diferencias de versión se detallan en la sección 8.
-
-![Comparación del PPR con cargos al tope, tarifas del folleto y mitad hipotética frente al VUAA con el mismo bolsillo](outputs/graficas/07_tarifa_folleto.png)
-
-*Fuente: elaboración propia con la [sensibilidad de tarifas][resultados-folleto]
-y el [generador de la gráfica][grafica-folleto].*
-
-Cada panel es un escenario cambiario: azul = PPR al tope, cian = PPR con
-tarifas del folleto, naranja = PPR mitad hipotética y verde claro = VUAA con el
-mismo bolsillo.
-
-Hay dos formas de comparar que responden a preguntas distintas:
-**mismo bolsillo** (5,000/mes
-en ambos; el PPR además recibe la devolución del SAT — la comparación justa) y
-**mismos aportes** (le sumas al VUAA, de tu bolsillo, lo que en el PPR paga el
-SAT). El VUAA gana en todas estas comparaciones. Con la regla del 4% en el retiro
-(retiros graduales de los 65 a los 95) el orden no cambia: en pesos de hoy,
-VUAA mismo bolsillo $17.4M, PPR mitad $15.1M, PPR tope $12.5M
-([simulación de retiro][resultados-retiro]).
-
-**La variable decisiva son los cargos que Allianz aplique a tu póliza.** La CG
-indica máximos y el folleto publica 0.9% / 0.1% / 15 UDIS; para conocer los
-cargos de una póliza concreta, pide su desglose por escrito. No supongas que
-la carátula por sí sola contiene las tres tarifas. Con el mismo bolsillo, el
-PPR empata con el VUAA si cobra el 31% de sus topes con peso estable, o el 11%
-con peso depreciado. En la estrategia híbrida (5k al PPR + la devolución invertida en
-VUAA), el empate sube al 53% y 25%; con cargos a mitad de tope y peso estable,
-el híbrido ya empata ($25.3M vs $25.1M). Y si al retirar ya hubieras usado parte
-de la exención con otras pensiones, el PPR baja rápido (tope, peso estable:
-$19.2M con exención íntegra, $16.0M con la mitad, $12.8M sin nada) — detalle y
-supuestos en la sección 8 ([auditoría de empates][auditoria];
-[24 escenarios fiscales][resultados-fiscales]).
-
-Estas cifras reemplazan a las de la primera versión (que decía que el VUAA
-ganaba "por el ISR de salida" y que el bono "compensaba los cargos"): la
-cascada completa de correcciones está documentada en la [auditoría][auditoria].
-
-## 5. Recorrido por las gráficas
-
-Cómo leerlas: las cifras están en pesos del año en que ocurren, salvo la
-gráfica de retiro, en pesos de hoy. Con 4% de inflación, $25M dentro de 40 años
-equivalen a unos $5.2M de hoy. Las imágenes se generan desde el
-[modelo central][modelo], la [simulación de retiro][modelo-retiro] y la
-[serie de comisiones][modelo-comisiones]; sus datos están en
-[resultados base][resultados],
-[retiro][resultados-retiro] y [comisiones][comisiones].
-
-### 5.1. Lo que te llevas a los 65
-
-![Barras del neto al año 40 por escenario, con el ISR de salida en rojo](outputs/graficas/02_neto_tras_impuesto.png)
-
-*Fuente: elaboración propia con [resultados base][resultados] y
-[generador de gráficas][graficas].*
-
-Cada barra separa el neto recibido del ISR al retirar: azul = PPR al tope,
-naranja = PPR a mitad, verde oscuro = VUAA con los mismos aportes, verde claro =
-VUAA con el mismo bolsillo y rojo = ISR.
-Con peso estable, el VUAA con el mismo bolsillo termina en $25.1M; el
-PPR, en $23.2M con cargos a mitad del tope y en $19.2M con cargos al tope. El
-PPR al tope casi no paga ISR ($0.2M) porque el retiro único está exento hasta
-90 UMA anuales (~$18.5M al año 40; [RMF 2026, regla 3.17.6][rmf];
-[RLISR, art. 171][rlisr]; [resultado calculado][resultados]).
-
-> **En corto:** con el mismo dinero de tu bolsillo, el VUAA te deja entre $1.9M
-> y $5.9M más que el PPR, y no es por impuestos: al salir, el PPR paga entre
-> $0.2M y $2.2M de ISR y el VUAA $2.1M.
-
-### 5.2. Por qué el PPR se queda atrás: las comisiones
-
-![Áreas de cargos cobrados y líneas del costo real para PPR y VUAA](outputs/graficas/06_comisiones_durante_plazo.png)
-
-*Fuente: elaboración propia con [serie de comisiones][comisiones] y
-[generador de la gráfica][modelo-comisiones].*
-
-Las áreas apiladas son los cargos del PPR al tope cobrados hasta cada año:
-azul = administrativo, naranja = gestión y morado = fijo. Las líneas muestran
-el costo real, es decir, el saldo que falta porque esos cargos dejaron de
-invertirse: línea azul oscuro continua = PPR al tope, línea azul oscuro
-discontinua = PPR a mitad y línea verde = VUAA. El 85% de los cargos cobrados
-corresponde al cargo de gestión: 0.1% al mes sobre todo tu fondo, que parece
-poco pero equivale a ~1.4% al año durante 40 años. El Bono de Fidelidad, la
-bonificación parcial de cargos, vale $46k al año 25. El modelo supone que el
-PPR rinde lo mismo que el S&P 500; sus alternativas de inversión reales no
-replican el índice ([Allianz México, CG, §§3.6 y 3.12][cg];
-[serie de comisiones del modelo][comisiones]).
-
-> **En corto:** con peso estable, en 40 años le pagarías a Allianz $3.4M en
-> comisiones por invertir tu ahorro, contra $0.33M si compras el S&P 500 tú mismo
-> con el VUAA con los mismos aportes (incluye compra, OCF y venta).
-> Como ese dinero deja de crecer, las comisiones del PPR te quitan $15.2M del
-> saldo final (44% de lo que tendrías sin ellas); las del VUAA, $0.9M.
-
-### 5.3. Cuándo se abre la diferencia
-
-![Líneas del saldo antes del retiro y puntos del neto final](outputs/graficas/01_evolucion_saldos.png)
-
-*Fuente: elaboración propia con [resultados base][resultados] y
-[generador de gráficas][graficas].*
-
-Las líneas son el saldo del fondo antes de un retiro (el Fondo de Bono no cuenta
-antes del año 25): azul = PPR al tope, naranja = PPR a mitad, verde oscuro =
-VUAA con los mismos aportes y verde claro discontinuo = VUAA con el mismo
-bolsillo. El punto final de cada color es el neto tras vender o retirar; la línea
-roja punteada muestra su diferencia respecto al saldo previo y la gris marca el
-año 25, cuando se acredita el bono. Antes de ese año, la línea del PPR **no es
-el valor de rescate**: faltan los cargos por retiro anticipado de la cláusula
-3.14.2 ([Allianz México, CG, §3.14.2][cg]). Durante los primeros 25 años las
-curvas casi se enciman; el PPR a mitad de tope incluso va un poco arriba porque
-recibe la devolución del SAT. Después, las comisiones cobradas
-sobre un saldo cada vez más grande abren la brecha.
-
-> **En corto:** con cargos al tope, a los 20 años el PPR va $0.4M atrás del
-> VUAA; a los 40, $7.9M atrás antes del ISR ($5.9M después). Las comisiones casi
-> no se notan al principio y pesan muchísimo al final: la Trampa 1 en acción.
-
-### 5.4. De dónde sale tu dinero
-
-![Composición del neto: bolsillo, devolución SAT, bono y crecimiento](outputs/graficas/03_composicion_saldo.png)
-
-*Fuente: elaboración propia con [resultados base][resultados] y
-[generador de gráficas][graficas].*
-
-Gris es lo que aportas de tu bolsillo; morado, la devolución del SAT reinvertida
-en el PPR ($0.55M en 39 pagos); naranja, el Bono de Fidelidad; y verde, el
-crecimiento después de cargos, venta e ISR. Por eso el PPR suma $2.40M propios
-más $0.55M del SAT: $2.95M aportados al plan. El VUAA con los mismos aportes
-recibe $2.95M, pero todos salen de tu bolsillo. La barra completa es el dinero
-neto que recibes.
-La línea gris discontinua separa los dos escenarios de tipo de cambio. Lo
-aportado representa solo entre 6 y 15 de cada 100 pesos del neto: casi todo es
-rendimiento compuesto. En el PPR lo aportado pesa más en el total (de 9 a 15 de
-cada 100, frente a 6 a 10 en el VUAA) porque las comisiones consumieron parte
-del crecimiento ([desglose del modelo][resultados]; [código de las gráficas][graficas]).
-
-> **En corto:** de cada 100 pesos que tendrías a los 65, entre 84 y 94 los generaría
-> el mercado; el Bono de Fidelidad del PPR aporta cerca de 1.
-
-### 5.5. Cuánto rinde cada peso tuyo
-
-![Aportes propios en gris, devolución SAT en morado y neto en turquesa](outputs/graficas/04_bolsillo_vs_neto.png)
-
-*Fuente: elaboración propia con [resultados base][resultados] y
-[generador de gráficas][graficas].*
-
-Gris es lo que sale de tu bolsillo en 40 años: $2.40M en el PPR y el VUAA
-"mismo bolsillo", o $2.95M en el VUAA "mismos aportes". El tramo morado solo
-aparece en el PPR: son $0.55M de devolución del SAT reinvertida, que elevan lo
-aportado al plan a $2.95M. Turquesa es lo que te llevas después del ISR.
-El [modelo][modelo] registra por separado `bolsillo` y `aportado`; la
-[gráfica 04][graficas] muestra ambos sin confundir devolución con dinero propio.
-
-> **En corto:** por cada peso que sale de tu bolsillo, el VUAA te devuelve $10.5
-> y el PPR entre $8.0 y $9.6 con peso estable ($16.4 contra $10.9 a $13.5 si el
-> peso se deprecia).
-
-### 5.6. Cuánto te paga al retirarte
-
-![Retiros netos en tono intenso y legado en tono claro para cuatro escenarios](outputs/graficas/05_fase_retiro_4pct.png)
-
-*Fuente: elaboración propia con [resultados de retiro][resultados-retiro] y
-[generador de la gráfica][modelo-retiro].*
-
-En vez de sacar todo a los 65, retiras cada año el 4% del saldo inicial,
-ajustado por inflación, durante 30 años. Este contrato exige retirar el PPR de
-una sola vez y en su totalidad ([Allianz México, CG, §3.21][cg]), así que su
-neto se reinvierte en VUAA en el [escenario del modelo][modelo-retiro]. La
-[RMF 2026, regla 3.17.6, fr. IV][rmf] contempla retiros periódicos para otros
-PPR, pero esa modalidad no aparece en las Condiciones Generales de este
-producto. Todo está en
-pesos de hoy: verde oscuro = VUAA con los mismos aportes, verde claro = VUAA con
-el mismo bolsillo, azul = PPR al tope y naranja = PPR a mitad. En cada color,
-el tono intenso es lo que retiras en 30 años y el claro, la herencia a los 95
-años, una vez descontado el ISR latente. La etiqueta «retiro neto año 1» ya
-descuenta el ISR.
-Esta fase simplifica los costos futuros: no cobra OCF ni corretaje durante esos
-30 años ni al reinvertir el PPR.
-
-Fuente de los importes de esta gráfica: [resultados de retiro][resultados-retiro].
-
-> **En corto:** retirando 4% al año, el VUAA te deja en promedio $17.3k al mes
-> en pesos de hoy, ya con ISR; el PPR, entre $12.7k y $15.3k. Eso es entre un
-> 12% y un 27% menos cada mes durante 30 años.
-
-### En una frase
-
-Con el mismo dinero de tu bolsillo, comprar el S&P 500 tú mismo con el VUAA te
-deja $1.9M–$5.9M más con peso estable y $7.1M–$13.3M más si se deprecia 1.5%
-al año. En el escenario estable, los cargos del PPR cuestan $9.3M–$15.2M de
-saldo en 40 años y solo empataría si cobrara menos de un tercio de sus topes
-([resultados base][resultados]; [auditoría de cargos y empates][auditoria]).
-
-## 6. Estructura del repositorio
+**Estructura del repositorio:**
 
 ```
 ├── README.md
@@ -411,7 +412,7 @@ saldo en 40 años y solo empataría si cobrara menos de un tercio de sus topes
 ├── requirements.txt          Dependencias (Python 3.12)
 ├── data/
 │   ├── raw/                  (no se versiona) PDF oficiales de Allianz:
-│   │                         CG S0003-0247-2018 y folletos — descarga en §7
+│   │                         CG S0003-0247-2018 y folletos (ver abajo)
 │   └── processed/            Markdown de la CG y de la regla 3.17.6 RMF (docling)
 ├── src/
 │   ├── rag.py                Índice híbrido BM25+embeddings sobre el documento
@@ -436,22 +437,6 @@ saldo en 40 años y solo empataría si cobrara menos de un tercio de sus topes
     └── resultados_*.json     Resultados base, retiro, costos y fiscalidad
 ```
 
-## 7. Cómo reproducir
-
-**Documentos fuente** (los PDF no se versionan por derechos de autor; el repo
-incluye la transcripción de la CG y de la regla fiscal en `data/processed/`.
-El pipeline no necesita los PDF locales):
-
-- [Allianz México, *Condiciones Generales OptiMaxx plus Art. 151*, registro
-  CNSF S0003-0247-2018][cg] (PDF oficial para guardar en `data/raw/`; también
-  disponible la [transcripción navegable][cg-md] incluida en el repo).
-- [Allianz México, *Folleto OptiMaxx plus*, edición 2023][folleto] y
-  [edición 2025][folleto-cargos] (PDF oficiales): bono p. 10 y cargos p. 11 en
-  ambos; las dos ediciones publican la misma tarifa de cargos. Ninguna imprime
-  el año: «2025» procede del nombre del archivo oficial y «2023», de los
-  metadatos del PDF (septiembre de 2023).
-  En caso de diferencia prevalecen las Condiciones Generales.
-
 **Entorno y pipeline:**
 
 ```bash
@@ -470,13 +455,27 @@ uv pip install --python .venv/Scripts/python.exe -r requirements.txt
 .venv/Scripts/python.exe src/sim_sensibilidad_fiscal.py --otros-ingresos 600000 --ultimo-sueldo 50000
 ```
 
-Para variar el caso sin descoordinar el bono, las aportaciones y la devolución,
-consulta las reglas de la sección 8 (objeto `Parametros`). El índice RAG guarda
-la huella SHA-256 del Markdown de las Condiciones Generales. Si el documento
-cambia, hay que reconstruir el índice.
+El índice RAG guarda la huella SHA-256 del Markdown de las Condiciones
+Generales; si el documento cambia, hay que reconstruir el índice. Para variar
+el caso, usa `Parametros` (sección 7).
 
-**Validación y conversión de la CG:** una descarga bloqueada por Cloudflare puede
-guardar HTML con extensión `.pdf`. Comprueba la firma antes de convertir:
+**Documentos fuente:** los PDF no se versionan por derechos de autor. El repo
+incluye la [transcripción de la CG][cg-md] y de la regla fiscal en
+`data/processed/`, y el pipeline no necesita los PDF locales. Para verificar
+contra los originales: [CG oficial][cg] (para guardar en `data/raw/`) y folletos
+[2023][folleto] y [2025][folleto-cargos]; ambas ediciones publican bono en la
+p. 10 y cargos en la p. 11.
+
+Si regeneras la transcripción, convierte solo la CG indicada, sin comodines
+sobre `data/raw/`: los documentos modelo de carátula y estado de cuenta pueden
+contener datos identificables, y sus conversiones deben permanecer en
+`data/raw/`, que no se versiona.
+
+<details>
+<summary>Validar y convertir el PDF de la CG</summary>
+
+Una descarga bloqueada por Cloudflare puede guardar HTML con extensión `.pdf`.
+Comprueba la firma antes de convertir:
 
 ```bash
 .venv/Scripts/python.exe -c "from pathlib import Path; p = Path('data/raw/CG-OptiMaxx-plus-Art.151-CNSF-S0003-0247-2018.pdf'); assert p.read_bytes().startswith(b'%PDF-'), 'La descarga no es un PDF'"
@@ -486,152 +485,8 @@ docling convert "data/raw/CG-OptiMaxx-plus-Art.151-CNSF-S0003-0247-2018.pdf" --t
 Valida también cada folleto descargado y ábrelo para comprobar que tiene 15
 páginas. Si el portal devuelve HTML o HTTP 403, conserva el enlace oficial y
 descárgalo desde el navegador; no uses esa respuesta como documento fuente.
-Convierte solo la CG indicada, sin comodines sobre `data/raw/`: los documentos
-modelo de carátula y estado de cuenta pueden contener datos identificables y
-sus conversiones deben permanecer en `data/raw/`, que no se versiona.
 
-## 8. Las definiciones formales (lo que la ley, el contrato y el modelo dicen)
-
-Todo lo anterior en su versión técnica, para quien quiera verificar contra las
-fuentes. El [contrato oficial][cg] también está en [Markdown navegable][cg-md]
-y es consultable por sección con el RAG (`src/rag.py search`).
-
-**Cargos del PPR** ([Allianz México, CG, §3.12][cg]; topes "hasta", +16% IVA
-conforme a la [LIVA, art. 1][liva]):
-administrativo 1.5% trimestral sobre el Fondo Inicial (aportaciones de los
-primeros 18 meses) y sobre el Fondo de Bono durante el Plazo Comprometido;
-gestión 0.1% mensual sobre el fondo total; fijo 25 UDIS/mes desde el mes 19.
-Ambos folletos de Allianz ([2023][folleto-2023-cargos] y [2025][folleto-cargos],
-p. 11) publican 0.9%, 0.1% y 15 UDIS/mes para esos mismos tres cargos. Es una
-tarifa publicada para el producto, no una constancia
-de los cargos de cada póliza. La mitad de todos los máximos sigue siendo solo
-una sensibilidad del modelo; el folleto mantiene la gestión en el máximo.
-Retiro total antes del plazo: cargos diferidos + 1% ([CG, §3.14.2][cg]); fuera
-del plazo, sin cargo ([CG, §3.14.3][cg]). El valor inicial de la UDI procede de
-[Banxico][udi].
-
-**Plazos** ([CG, §3.1][cg]): Plazo Comprometido de 5 a 25 años; Plazo Inicial de
-18 meses.
-La cláusula 3.1 solo permite seguir aportando a la misma póliza después del
-Plazo Comprometido cuando este es de 25 años; para un plazo menor, el modelo
-exige terminar los aportes allí (un caso de dos pólizas requiere modelo propio;
-[validación en el modelo][modelo]).
-
-**Bono de Fidelidad** ([CG, §3.6][cg]): 75% de la
-aportación comprometida del **primer año** para 60k anuales y plazo ≥ 20 años.
-El modelo interpreta la generación conforme a los pagos comprometidos como un
-reparto proporcional durante el plazo ($150/mes). Los folletos [2023][folleto]
-y [2025, p. 10][folleto-2025-bono] describen su generación con los pagos
-iniciales del primer año; no respaldan ese reparto de $150/mes. Se mantiene la
-interpretación de la CG, que prevalece. El bono rinde inflación + 5% (tope 9%) y
-paga sus propios cargos ([CG, §3.10.3][cg]). Se acredita al cumplir el Plazo
-Comprometido. Desde entonces, el modelo supone que el titular instruye
-invertirlo en la misma alternativa de mercado; por defecto,
-la cláusula 3.6 lo coloca en renta fija de corto plazo hasta recibir
-instrucciones ([supuesto implementado][modelo]).
-
-**Diferencias entre los folletos y la CG usada:** ambos folletos describen la
-generación del bono durante el primer año. Además, el folleto 2025 indica plazo
-mínimo de 10 años y primer rango de aportación anual de 24,000 pesos; la CG 2018
-y el folleto 2023 indican 5 años y 12,000 pesos ([CG, §§3.1 y 3.6][cg-md];
-folletos, pp. 8 y 10). Los folletos también usan «Saldo Inicial/Comprometido/Total»
-frente a los fondos de la CG, y su página de cargos no explicita IVA. El
-escenario del folleto conserva la estructura, el bono y el IVA del modelo CG
-2018; sustituye únicamente las tres tarifas publicadas.
-
-**Deducción de aportaciones** ([LISR, art. 151, fr. V][lisr151]; [CG, §3.20][cg]):
-las aportaciones son deducibles hasta el 10% de los ingresos acumulables, sin
-exceder 5 UMA anuales. Con 600k de ingreso y 60k aportados: devolución =
-60,000 × 23.52% = $14,112 (tarifa anual del ISR de 2026,
-[SAT, Anexo 8 de la RMF 2026][anexo8]). La devolución se calcula sobre los
-pagos mensuales del titular y no se deduce por segunda vez al reinvertirla
-([modelo][modelo]). La UMA de 2026 procede del
-[INEGI][uma].
-
-**Salida del PPR** ([CG, §3.21][cg]; [LISR, art. 151, fr. V][lisr151];
-[RMF 2026, regla 3.17.6][rmf]; [RLISR, art. 171][rlisr]): retiro en una sola
-exhibición una vez cumplidos los requisitos de permanencia (65 años o
-invalidez); exento hasta 90 UMA elevadas al año
-(~$3.85M en 2026, crece con la UMA). El caso base aplica como aproximación la
-tarifa anual 2026 congelada al excedente. Sin embargo, el art. 171 remite al
-[art. 95 LISR][lisr95], cuyo resultado depende también de los demás ingresos
-gravables y el último sueldo mensual. El estudio lo muestra en
-[sim_sensibilidad_fiscal.py][sensibilidad] (24 cruces:
-exención consumida 0/50/100% × método tarifa/95 × tipo de cambio; pendiente de
-validación fiscal, con ingresos gravables y último sueldo por configurar). La
-exención **se comparte con otras pensiones** (RMF 2026, regla 3.17.6.V:
-AFORE/IMSS): el caso base supone que está íntegra; consumida a la mitad o por
-completo, el PPR tope con peso estable baja de $19.2M a $16.0M o $12.8M. El
-modelo rechaza retiros del PPR antes de los 65 años: ese caso requiere el
-régimen anticipado de la [CG, §3.21.2][cg] ([resultados de sensibilidad][resultados-fiscales]).
-
-**Salida del VUAA** ([LISR, art. 129][lisr129]): el modelo aplica 10% definitivo
-sobre la ganancia, con costo de adquisición actualizado por inflación y
-retención por el intermediario. Esta es la hipótesis fiscal del estudio para la
-venta bursátil de VUAA en México; confirma su aplicación a tu operación con tu
-intermediario o asesor fiscal ([implementación del cálculo][modelo]).
-
-**Parámetros del modelo** ([código fuente][modelo]): para variar
-el caso sin descoordinar el bono, las aportaciones y la devolución, pasa
-`Parametros(aportacion_mensual=..., ingreso_anual=..., edad_inicial=..., meses=..., mes_inicio=...)` a `sim_ppr(..., config=...)` y
-`sim_vuaa(..., config=...)`. El bono usa la tabla de la cláusula 3.6 según
-la aportación y el plazo; la tarifa del ISR queda congelada en pesos nominales
-de 2026.
-
-**Supuestos de mercado:** rendimiento hipotético del S&P 500 de 10% nominal anual;
-peso estable y depreciación anual compuesta del 1.5% (1.10 × 1.015 − 1 = 11.65%;
-con 4% de inflación mexicana, la depreciación es el escenario consistente);
-inflación del 4% (indexa la UDI, la UMA y el bono); la tarifa del ISR y el
-salario se mantienen congelados
-nominalmente 40 años (indexar la tarifa, como manda el art. 152, le ahorraría
-al PPR 0.1-0.7M; [LISR, art. 152][lisr152]; [modelo][modelo];
-[auditoría][auditoria]). Son supuestos para comparar escenarios, no predicciones.
-
-**No modelado en el caso base:** costo del seguro de fallecimiento, Asesoría
-Discrecional opcional (+1% anual), diferencial de compra y venta del VUAA
-(spread), pensiones concurrentes y cambios de legislación. La fase de retiro
-del 4% tampoco incorpora OCF ni corretaje posteriores al año 40. Las
-alternativas reales de Allianz pueden rendir distinto del S&P 500 supuesto
-para ambos vehículos.
-
-Detalles y fuentes de cada cifra: la hoja "Supuestos" del Excel; la cascada
-completa de correcciones del modelo (primera versión → actual, con verificación
-en ambos extremos) está documentada en [la auditoría][auditoria].
-
-## 9. Fuentes y trazabilidad
-
-Las fuentes externas respaldan condiciones contractuales, normas y datos
-publicados. Los importes a 40 años, las comparaciones y las sensibilidades son
-**cálculos propios**: sus parámetros, fórmulas y resultados se pueden abrir
-desde los enlaces de cada sección. Fuentes consultadas para este corte del
-estudio (septiembre de 2026):
-
-| Emisor y documento | Dato usado | Enlace |
-|---|---|---|
-| Allianz México, *Condiciones Generales OptiMaxx plus Art. 151*, CNSF S0003-0247-2018 | Plazos, bono, cargos y retiros, §§3.1, 3.6, 3.10.3, 3.12, 3.14 y 3.21 | [PDF oficial][cg] · [transcripción del repo][cg-md] |
-| Allianz México, *Folleto OptiMaxx plus*, edición 2023 (fecha según metadatos del PDF; sin año impreso) | Bono y generación durante el primer año, p. 10; mismos cargos que en 2025, p. 11 | [Bono][folleto] · [cargos][folleto-2023-cargos] |
-| Allianz México, *Folleto OptiMaxx plus 2025* | Cargos publicados de 0.9% trimestral, 0.1% mensual y 15 UDIS/mes, p. 11; aviso de alcance, p. 14 | [Cargos][folleto-cargos] · [aviso][folleto-aviso] |
-| Cámara de Diputados, *Ley del ISR* | Deducción PPR, venta bursátil, tasa efectiva de separación y tarifa anual: arts. 151, 129, 95 y 152 | [Art. 151][lisr151] · [art. 129][lisr129] · [art. 95][lisr95] · [art. 152][lisr152] |
-| Cámara de Diputados, *Ley del IVA* | Tasa general del 16% aplicada a los cargos | [Art. 1][liva] |
-| SEGOB, *Reglamento de la Ley del ISR* | Exención de retiro único y remisión al art. 95: art. 171 | [Texto oficial][rlisr] |
-| SAT/DOF, *RMF 2026* y *Anexo 8* | Tratamiento del PPR, regla 3.17.6; tarifa anual ISR 2026 | [RMF, regla 3.17.6][rmf] · [Anexo 8, tarifa anual][anexo8] |
-| INEGI, *UMA 2026*; Banxico, *UDI* | UMA diaria de $117.31; UDI de $8.826356 al 26-sep-2026 | [INEGI][uma] · [Banxico][udi] |
-| Vanguard México y BMV, *VUAA* | Fondo acumulativo, índice S&P 500, OCF de 0.07% y presencia en BMV | [Vanguard][vuaa] · [BMV][bmv] |
-| GBM, *Guía de Servicios de Inversión* | Corretaje escalonado de Trading México según el promedio operado en los últimos 3 meses, más IVA | [Guía, p. 19][gbm-tarifas] |
-| Actinver, *Guía de Servicios de Inversión* | Corretaje escalonado de Actinver Trade según operaciones de capitales en los 30 días anteriores, más IVA; servicio asesorado distinto | [Trade, p. 9][actinver-tarifas] · [asesorado, p. 7][actinver-asesorado] |
-| S&P Dow Jones Indices, *S&P 500* | Índice de referencia; el 10% anual de la simulación es un supuesto propio | [Ficha del índice][sp500] |
-
-**Cálculos reproducibles:** [modelo mensual][modelo], [resultados base][resultados],
-[retiro del 4%][resultados-retiro], [serie de comisiones][comisiones],
-[sensibilidad fiscal][resultados-fiscales], [simulación de tarifas del folleto][modelo-folleto],
-[resultados del folleto][resultados-folleto] y [auditoría de correcciones][auditoria].
-
-## Aviso
-
-Análisis educativo con datos públicos; no es asesoría financiera ni fiscal.
-El PDF oficial de Allianz se [descarga desde su portal][cg] y no se versiona en
-este repositorio; se incluye una [transcripción navegable][cg-md] para facilitar
-la verificación por cláusula.
+</details>
 
 [cg]: <https://componentes.allianz.com.mx/widget/web/guest/documentos?p_p_id=documento_WAR_gestorDocumentosportlet&p_p_lifecycle=2&p_p_state=maximized&p_p_mode=view&p_p_resource_id=printPdf&p_p_cacheability=cacheLevelPage&_documento_WAR_gestorDocumentosportlet_idfile=/home/azuser/documentos_pdf/Condiciones%20Generales/Soluciones%20Patrimoniales/CG-OptiMaxx-plus-Art.151%20-%20CNSF-S0003-0247-2018.pdf&_documento_WAR_gestorDocumentosportlet_fileName=CG-OptiMaxx-plus-Art.151%20-%20CNSF-S0003-0247-2018&_documento_WAR_gestorDocumentosportlet_opcion=1>
 [cg-md]: data/processed/CG-OptiMaxx-plus-Art.151-CNSF-S0003-0247-2018.md
@@ -665,6 +520,7 @@ la verificación por cláusula.
 [graficas]: src/graficas_tablas.py
 [sensibilidad]: src/sim_sensibilidad_fiscal.py
 [auditoria]: src/auditoria.py
+[excel]: outputs/resultados_ppr_vs_vuaa.xlsx
 [resultados]: outputs/resultados_ppr_vs_vuaa.json
 [resultados-folleto]: outputs/resultados_tarifa_folleto.json
 [resultados-retiro]: outputs/resultados_retiro_4pct.json
