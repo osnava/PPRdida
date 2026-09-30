@@ -18,7 +18,7 @@ BASE = Path(__file__).resolve().parent.parent   # raíz del proyecto
 OUT = BASE / "outputs" / "graficas"
 OUT.mkdir(parents=True, exist_ok=True)
 M = 1e6
-AZUL, NARANJA, VERDE, VERDE_CLARO, ROJO, GRIS = "#1f77b4", "#ff7f0e", "#2ca02c", "#74c476", "#d62728", "#7f7f7f"
+AZUL, NARANJA, VERDE, VERDE_CLARO, ROJO, GRIS, MORADO = "#1f77b4", "#ff7f0e", "#2ca02c", "#74c476", "#d62728", "#7f7f7f", "#9467bd"
 plt.rcParams.update({"font.size": 10, "axes.spines.top": False, "axes.spines.right": False})
 
 grupos = [  # (título, [índices en ESCENARIOS])
@@ -109,10 +109,14 @@ plt.close(fig)
 # ---------------------------------------------------- 3. composición del saldo
 fig, ax = plt.subplots(figsize=(11.5, 7))
 aportes = np.array([ESCENARIOS[i][1]["aportado"] for i in orden]) / M
+bolsillo = np.array([ESCENARIOS[i][1]["bolsillo"] for i in orden]) / M
+devoluciones = aportes - bolsillo  # solo el PPR recibe una devolución real del SAT
 bonos = np.array([ESCENARIOS[i][1].get("bono", 0.0) for i in orden]) / M
 netos = np.array([ESCENARIOS[i][1]["neto"] for i in orden]) / M
 crecim = netos - aportes - bonos       # rendimiento neto de cargos, venta e ISR
-ax.barh(y, aportes, color=GRIS, label="Aportado (5k/mes; + devolución SAT salvo VUAA mismo bolsillo)")
+ax.barh(y, bolsillo, color=GRIS, label="Aportado de tu bolsillo")
+ax.barh(y, devoluciones, left=bolsillo, color=MORADO,
+        label="Devolución SAT reinvertida en el PPR (0.55 M MXN)")
 ax.barh(y, bonos, left=aportes, color=NARANJA, alpha=0.9, label="Bono de Fidelidad (solo PPR)")
 ax.barh(y, crecim, left=aportes + bonos, color=VERDE, alpha=0.75, label="Crecimiento neto de cargos, venta e ISR")
 for yi, n in zip(y, netos):
@@ -137,11 +141,14 @@ fig, axes = plt.subplots(1, 2, figsize=(14, 5), sharey=True)
 for ax, (titulo, idxs) in zip(axes, grupos):
     x = np.arange(len(idxs))
     bolsillo = [ESCENARIOS[i][1]["bolsillo"] / M for i in idxs]
+    devoluciones = [(ESCENARIOS[i][1]["aportado"] - ESCENARIOS[i][1]["bolsillo"]) / M for i in idxs]
     neto = [ESCENARIOS[i][1]["neto"] / M for i in idxs]
     ax.bar(x - 0.2, bolsillo, 0.4, color=GRIS, label="Desembolso de tu bolsillo")
+    ax.bar(x - 0.2, devoluciones, 0.4, bottom=bolsillo, color=MORADO,
+           label="Devolución SAT reinvertida en el PPR")
     ax.bar(x + 0.2, neto, 0.4, color="#2a9d8f", label="Neto tras impuestos")
-    for xi, b, n in zip(x, bolsillo, neto):
-        ax.text(xi - 0.2, b + 0.4, f"\\${b:.2f}M", ha="center", fontsize=8.5)
+    for xi, b, d, n in zip(x, bolsillo, devoluciones, neto):
+        ax.text(xi - 0.2, b + d + 0.4, f"\\${b + d:.2f}M", ha="center", fontsize=8.5)
         ax.text(xi + 0.2, n + 0.4, f"\\${n:.1f}M", ha="center", fontsize=9, fontweight="bold")
     ax.set_xticks(x)
     ax.set_xticklabels([estilo[i][1].replace(" que el PPR", "").replace(" · ", "\n") for i in idxs], fontsize=8.5)
@@ -149,7 +156,7 @@ for ax, (titulo, idxs) in zip(axes, grupos):
     ax.yaxis.set_major_formatter(mtick.StrMethodFormatter("{x:,.0f} M"))
 axes[0].set_ylabel("Millones MXN")
 axes[0].legend(frameon=False, fontsize=9)
-fig.suptitle("Lo que pusiste vs lo que te llevas (PPR: el SAT financia 550k; VUAA mismos aportes: todo sale de ti)",
+fig.suptitle("Aportado al producto vs neto final (PPR: 2.40M propios + 0.55M SAT; VUAA mismos aportes: 2.95M propios)",
              fontsize=11, fontweight="bold")
 fig.tight_layout()
 fig.savefig(OUT / "04_bolsillo_vs_neto.png", dpi=150)

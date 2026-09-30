@@ -200,10 +200,14 @@ sobre un saldo cada vez más grande abren la brecha.
 
 ### 5.4. De dónde sale tu dinero
 
-![Composición del dinero neto recibido al retirar](outputs/graficas/03_composicion_saldo.png)
+![Composición del neto: bolsillo, devolución SAT, bono y crecimiento](outputs/graficas/03_composicion_saldo.png)
 
-Gris es lo aportado, naranja el Bono de Fidelidad y verde el crecimiento después
-de cargos, venta e ISR; la barra completa es el dinero neto que recibes.
+Gris es lo que aportas de tu bolsillo; morado, la devolución del SAT reinvertida
+en el PPR ($0.55M en 39 pagos); naranja, el Bono de Fidelidad; y verde, el
+crecimiento después de cargos, venta e ISR. Por eso el PPR suma $2.40M propios
+más $0.55M del SAT: $2.95M aportados al plan. El VUAA con los mismos aportes
+recibe $2.95M, pero todos salen de tu bolsillo. La barra completa es el dinero
+neto que recibes.
 La línea gris discontinua separa los dos escenarios de tipo de cambio. Lo
 aportado es solo 9 a 15 de cada 100 pesos del neto: casi todo es rendimiento
 compuesto. En el PPR lo aportado pesa más en el total porque las comisiones se
@@ -214,11 +218,12 @@ comieron parte del crecimiento.
 
 ### 5.5. Cuánto rinde cada peso tuyo
 
-![Barras grises del desembolso y turquesas del neto por escenario](outputs/graficas/04_bolsillo_vs_neto.png)
+![Aportes propios en gris, devolución SAT en morado y neto en turquesa](outputs/graficas/04_bolsillo_vs_neto.png)
 
-Gris es lo que sale de tu bolsillo en 40 años: $2.40M, o $2.95M si en el VUAA
-pones también el equivalente de la devolución. Turquesa es lo que te llevas
-después del ISR.
+Gris es lo que sale de tu bolsillo en 40 años: $2.40M en el PPR y el VUAA
+"mismo bolsillo", o $2.95M en el VUAA "mismos aportes". El tramo morado solo
+aparece en el PPR: son $0.55M de devolución del SAT reinvertida, que elevan lo
+aportado al plan a $2.95M. Turquesa es lo que te llevas después del ISR.
 
 > **En corto:** por cada peso que sale de tu bolsillo, el VUAA te regresa $10.5
 > y el PPR entre $8.0 y $9.6 con peso estable ($16.4 contra $10.9 a $13.5 si el
