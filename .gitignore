@@ -3,7 +3,10 @@
 
 # Artefactos regenerables del índice RAG
 index/
+
+# Auditorías y archivos temporales locales
 .audit/
+tmp/
 
 # Python
 __pycache__/

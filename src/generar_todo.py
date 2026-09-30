@@ -15,6 +15,8 @@ from sim_ppr_vs_vuaa import INFLACION, MESES
 BASE = Path(__file__).resolve().parent.parent
 SCRIPTS = (
     "sim_ppr_vs_vuaa.py",
+    "sim_tarifa_folleto.py",
+    "grafica_tarifa_folleto.py",
     "graficas_tablas.py",
     "sim_retiro_4pct.py",
     "grafica_retiro.py",
@@ -50,13 +52,19 @@ def verificar():
     resultados = json.loads((salida / "resultados_ppr_vs_vuaa.json").read_text(encoding="utf-8"))
     if len(resultados) != 8:
         raise RuntimeError("Faltan escenarios en el JSON principal")
+    folleto = json.loads((salida / "resultados_tarifa_folleto.json").read_text(encoding="utf-8"))
+    if len(folleto["escenarios"]) != 2:
+        raise RuntimeError("Faltan escenarios de la tarifa del folleto")
+    for fx, caso in folleto["escenarios"].items():
+        if not caso["ppr_tope_neto"] < caso["ppr_folleto_neto"] < caso["ppr_mitad_neto"]:
+            raise RuntimeError(f"La sensibilidad del folleto no concilia en {fx}")
     sensibilidad = json.loads((salida / "resultados_sensibilidad_fiscal.json").read_text(encoding="utf-8"))
     if len(sensibilidad["resultados"]) != 24:
         raise RuntimeError("Faltan escenarios fiscales")
-    for i in range(1, 7):
+    for i in range(1, 8):
         if not list((salida / "graficas").glob(f"{i:02d}_*.png")):
             raise RuntimeError(f"Falta la gráfica {i:02d}")
-    print("VERIFICADO: 7 hojas, 8 escenarios base, 24 sensibilidades y 6 gráficas")
+    print("VERIFICADO: 7 hojas, 8 escenarios base, 2 escenarios de folleto, 24 sensibilidades y 7 gráficas")
 
 
 if __name__ == "__main__":

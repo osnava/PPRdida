@@ -1,0 +1,41 @@
+{
+  "fuente": "https://www.allianz.com.mx/content/dam/onemarketing/iberolatam/allianz-mx/ahorro---plus/documentos---plus/Folleto%20OptiMaxx%20plus%202025.pdf#page=11",
+  "cargo_administrativo_trimestral": 0.009,
+  "cargo_gestion_mensual": 0.001,
+  "cargo_fijo_udis_mensual_desde_mes_19": 15.0,
+  "iva_aplicado": 0.16,
+  "alcance": "sensibilidad híbrida: modelo CG 2018 con tarifas del folleto 2025; no equivale a póliza individual",
+  "generacion_bono": "proporcional durante el plazo comprometido, interpretación de CG 3.6; los folletos 2023 y 2025, p. 10, describen generación durante el primer año",
+  "escenarios": {
+    "peso estable": {
+      "ppr_tope_neto": 19198607.13790151,
+      "ppr_mitad_neto": 23151937.68211336,
+      "ppr_folleto_neto": 19903825.717208993,
+      "ppr_folleto_neto_hoy": 4145748.84377514,
+      "ppr_folleto_cargos_cobrados": {
+        "administrativo": 186768.4792489815,
+        "gestion": 3030388.470208367,
+        "fijo": 175471.84138050265
+      },
+      "ppr_folleto_isr_salida": 523520.5410836217,
+      "vuaa_mismo_bolsillo_neto": 25082958.39518494,
+      "mejora_folleto_vs_tope": 705218.5793074816,
+      "brecha_folleto_vs_vuaa_mismo_bolsillo": 5179132.677975949
+    },
+    "peso -1.5%/año": {
+      "ppr_tope_neto": 26092884.686545104,
+      "ppr_mitad_neto": 32313172.243122563,
+      "ppr_folleto_neto": 27145889.331382625,
+      "ppr_folleto_neto_hoy": 5654191.355359613,
+      "ppr_folleto_cargos_cobrados": {
+        "administrativo": 224234.60916893382,
+        "gestion": 4164102.573404162,
+        "fijo": 175471.84138050265
+      },
+      "ppr_folleto_isr_salida": 4374299.504891308,
+      "vuaa_mismo_bolsillo_neto": 39409518.916219376,
+      "mejora_folleto_vs_tope": 1053004.644837521,
+      "brecha_folleto_vs_vuaa_mismo_bolsillo": 12263629.584836751
+    }
+  }
+}

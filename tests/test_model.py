@@ -9,8 +9,9 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "src"))
 
 import rag
-from sim_ppr_vs_vuaa import (FX, OCF, Parametros, bono_pct, isr, sim_ppr,
-                             sim_vuaa)
+import sim_tarifa_folleto
+from sim_ppr_vs_vuaa import (FX, OCF, EscalasCargosPPR, Parametros,
+                             TARIFA_FOLLETO_2025, bono_pct, isr, sim_ppr, sim_vuaa)
 from sim_retiro_4pct import filas_retiro
 from sim_sensibilidad_fiscal import filas_fiscales
 
@@ -28,6 +29,31 @@ class ModeloBaseTest(unittest.TestCase):
         actuales = [sim_ppr(g, fs)["neto"] for g, _ in FX for fs in (1.0, 0.5)]
         for actual, esperado in zip(actuales, esperados):
             self.assertAlmostEqual(actual, esperado, delta=0.05)
+
+    def test_tarifa_folleto_es_distinta_de_mitad_uniforme(self):
+        for rendimiento, _ in FX:
+            tope = sim_ppr(rendimiento, 1.0)["neto"]
+            mitad = sim_ppr(rendimiento, 0.5)["neto"]
+            folleto = sim_ppr(rendimiento, TARIFA_FOLLETO_2025)["neto"]
+            self.assertAlmostEqual(
+                mitad, sim_ppr(rendimiento, EscalasCargosPPR(0.5, 0.5, 0.5))["neto"])
+            self.assertLess(tope, folleto)
+            self.assertLess(folleto, mitad)
+
+    def test_json_folleto_declara_las_tarifas_que_simula(self):
+        # Otra mezcla detecta metadatos fijos aunque el caso publicado siga pasando.
+        escalas = EscalasCargosPPR(0.4, 0.7, 0.8)
+        with patch.object(sim_tarifa_folleto, "TARIFA_FOLLETO_2025", escalas):
+            resultado = sim_tarifa_folleto.calcular()
+        self.assertAlmostEqual(resultado["cargo_administrativo_trimestral"], 0.006)
+        self.assertAlmostEqual(resultado["cargo_gestion_mensual"], 0.0007)
+        self.assertEqual(resultado["cargo_fijo_udis_mensual_desde_mes_19"], 20)
+        self.assertEqual(resultado["iva_aplicado"], Parametros().iva)
+        for rendimiento, fx in FX:
+            aplicado = sim_ppr(rendimiento, escalas)
+            publicado = resultado["escenarios"][fx]
+            self.assertAlmostEqual(publicado["ppr_folleto_neto"], aplicado["neto"])
+            self.assertEqual(publicado["ppr_folleto_cargos_cobrados"], aplicado["fees"])
 
     def test_vuaa_costos_completos_y_valor_real(self):
         self.assertEqual(OCF, 0.0007)

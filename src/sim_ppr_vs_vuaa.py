@@ -26,9 +26,12 @@ Inflación 4% (crece UDI del cargo fijo, UMA de la exención y referencia del bo
 Cargos PPR según Condiciones Generales (topes, "hasta"): administrativo 1.5%
 trimestral sobre Fondo Inicial (aportaciones meses 1-18) durante el Plazo
 Comprometido de 25 años; gestión 0.1% mensual sobre el fondo total; fijo 25
-UDIS/mes desde el mes 19; todo +IVA. Bono de Fidelidad (3.6 y folleto Allianz):
-75% de la aportación comprometida del primer año (45,000 en total), generado pro
-rata con los 300 pagos comprometidos (150/mes); rinde inflación+5% (tope 9%),
+UDIS/mes desde el mes 19; todo +IVA. Bono de Fidelidad (CG 3.6):
+75% de la aportación comprometida del primer año (45,000 en total). El modelo
+interpreta su generación conforme a los pagos comprometidos como un reparto
+entre los 300 pagos (150/mes). Los folletos Allianz 2023 y 2025, p. 10,
+describen en cambio su generación con los pagos iniciales del primer año;
+se conserva la interpretación de la CG, que prevalece. Rinde inflación+5% (tope 9%),
 paga cargo administrativo y de gestión (3.10.3) y se acredita al mes 300.
 Se supone que entonces el titular instruye invertirlo en la misma alternativa
 de mercado; CG 3.6 indica renta fija de corto plazo por defecto hasta recibir
@@ -49,6 +52,9 @@ MESES = 480
 APORT_M = 5_000.0
 INFLACION = 0.04
 IVA = 0.16
+TOPE_ADMIN_TRIMESTRAL = 0.015
+TOPE_GESTION_MENSUAL = 0.001
+TOPE_FIJO_UDIS_MENSUAL = 25
 UDI0 = 8.826356          # MXN/UDI, 26-sep-2026
 UMA0 = 117.31            # MXN/día, 2026
 REFUND = 14_112.0        # 60,000 × 23.52%
@@ -99,12 +105,29 @@ def bono_pct(aportacion_anual: float, plazo_meses: int) -> float:
 
 
 @dataclass(frozen=True)
+class EscalasCargosPPR:
+    """Fracción de cada tope de la CG 3.12; permite tarifas no uniformes."""
+
+    administrativo: float
+    gestion: float
+    fijo: float
+
+    def __post_init__(self):
+        if min(self.administrativo, self.gestion, self.fijo) < 0:
+            raise ValueError("Las escalas de cargos no pueden ser negativas")
+
+
+TARIFA_FOLLETO_2025 = EscalasCargosPPR(0.6, 1.0, 0.6)
+
+
+@dataclass(frozen=True)
 class Parametros:
     """Supuestos nominales; el mes 1 es enero de 2026 salvo mes_inicio distinto.
 
     La devolución usa la tarifa 2026 congelada y solo deduce los pagos mensuales
     del titular; no calcula una segunda deducción por reinvertir la devolución.
-    Los cargos PPR son los topes de la cláusula 3.12 multiplicados por fee_scale.
+    Los cargos PPR son los topes de la cláusula 3.12 multiplicados por fee_scale
+    (uniforme) o por EscalasCargosPPR (una escala por cargo).
     El ISR de salida usa toda la exención salvo exencion_ya_usada_mxn, que se
     expresa en pesos nominales del año de retiro. art95 es una sensibilidad.
     """
@@ -176,18 +199,21 @@ def impuesto_retiro(excedente: float, config: Parametros) -> float:
 
 
 # ------------------------------------------------------------------ simulaciones
-def sim_ppr(gross_anual: float, fee_scale: float, con_refund: bool = True,
+def sim_ppr(gross_anual: float, fee_scale: float | EscalasCargosPPR, con_refund: bool = True,
             config: Parametros | None = None):
     """Serie anual del saldo contable sin bono no acreditado y desglose final.
 
     La serie excluye el Fondo de Bono antes de cumplir el plazo y no es valor de
     rescate: antes de ese plazo faltarían cargos por retiro (3.14.2). fee_scale=0
-    da el mismo plan sin cargos para medir su costo real. Rendimiento, inflación,
-    cargos y fiscalidad los fija gross_anual y config (tarifa 2026 congelada).
+    da el plan sin cargos; EscalasCargosPPR permite las tarifas del folleto.
+    Rendimiento, inflación, cargos y fiscalidad los fija gross_anual y config
+    (tarifa 2026 congelada).
     """
     cfg = config or Parametros()
-    if gross_anual <= -1 or fee_scale < 0:
-        raise ValueError("El rendimiento debe ser mayor a -100% y fee_scale no puede ser negativo")
+    if gross_anual <= -1:
+        raise ValueError("El rendimiento debe ser mayor a -100%")
+    escalas = fee_scale if isinstance(fee_scale, EscalasCargosPPR) else EscalasCargosPPR(
+        fee_scale, fee_scale, fee_scale)
     pct_bono = bono_pct(cfg.aportacion_mensual * 12, cfg.plazo_comprometido)
     if cfg.plazo_inicial != 18:
         raise ValueError("El Plazo Inicial de esta póliza es 18 meses (cláusula 3.1)")
@@ -201,8 +227,8 @@ def sim_ppr(gross_anual: float, fee_scale: float, con_refund: bool = True,
     bono_mes = cfg.aportacion_mensual * 12 * pct_bono / cfg.plazo_comprometido
     i_m = (1 + gross_anual) ** (1 / 12) - 1
     i_b = (1 + min(cfg.inflacion + 0.05, 0.09)) ** (1 / 12) - 1
-    g = 0.001 * fee_scale * (1 + cfg.iva)      # gestión, mensual anticipado
-    a = 0.015 * fee_scale * (1 + cfg.iva)      # administrativo, trimestral vencido
+    g = TOPE_GESTION_MENSUAL * escalas.gestion * (1 + cfg.iva)      # gestión, mensual anticipado
+    a = TOPE_ADMIN_TRIMESTRAL * escalas.administrativo * (1 + cfg.iva)      # administrativo, trimestral vencido
     fi = fr = fb = bk = bono_acreditado = 0.0
     fees = {"administrativo": 0.0, "gestion": 0.0, "fijo": 0.0}
     serie_cargos = {k: [] for k in fees}
@@ -230,7 +256,7 @@ def sim_ppr(gross_anual: float, fee_scale: float, con_refund: bool = True,
             fi *= 1 - a; fb *= 1 - a
         if m > cfg.plazo_inicial:
             udi = cfg.udi_inicial * (1 + cfg.inflacion) ** ((m - 1) / 12)
-            f = 25 * udi * fee_scale * (1 + cfg.iva)
+            f = TOPE_FIJO_UDIS_MENSUAL * udi * escalas.fijo * (1 + cfg.iva)
             total = fr + bk
             if total:
                 fr -= f * fr / total; bk -= f * bk / total

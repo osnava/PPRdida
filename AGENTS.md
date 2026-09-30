@@ -17,9 +17,13 @@ Explica el mecanismo en lenguaje sencillo antes de dar detalles técnicos.
   legislación, UMA, UDI, tarifas o costos **vigentes**, verifica la fuente
   oficial actual y declara el año. No presentes una regla o tarifa de 2026 como
   si fuera automáticamente vigente en años posteriores.
-- El folleto comercial de Allianz ayuda a interpretar el bono, pero las
-  Condiciones Generales prevalecen ante una discrepancia. El enlace al folleto
-  oficial está en el README.
+- El folleto comercial de Allianz ayuda a interpretar el bono y publica cargos
+  de 0.9% trimestral administrativo, 0.1% mensual de gestión y 15 UDIS/mes de
+  cargo fijo. Son cifras publicadas para el producto, no prueba de la tarifa de
+  una póliza individual. Las Condiciones Generales prevalecen ante una
+  discrepancia. Los enlaces al folleto oficial están en el README.
+  Antes de usar un PDF local comprueba que comienza con `%PDF-`: una respuesta
+  de Cloudflare guardada con esa extensión puede ser HTML, no una fuente.
 - `src/sim_ppr_vs_vuaa.py` es una **implementación de supuestos**, no una fuente
   contractual ni un cálculo fiscal personal. No inventes cláusulas, cargos
   efectivos de una póliza, rendimientos ni devoluciones del SAT. Si falta la
@@ -46,9 +50,16 @@ Fidelidad; **3.10.3 y 3.12** fondos y cargos; **3.14** retiros y cargos de salid
 Puntos que suelen cambiar la respuesta:
 
 - Los porcentajes de cargos de 3.12 son **topes («hasta»)**, no los cargos
-  necesariamente contratados. Pide la carátula para calcular un caso personal.
+  necesariamente contratados. El folleto publica 0.9% / 0.1% / 15 UDIS, que
+  equivale al 60% / 100% / 60% de los tres topes. Para calcular un caso personal,
+  pide la póliza y un desglose escrito de los cargos aplicables; no presupongas
+  que la carátula por sí sola los enumera.
 - El bono de 3.6 se calcula sobre la **aportación comprometida del primer año**,
   según monto y plazo; las aportaciones adicionales no elevan ese porcentaje.
+  Los folletos 2023 y 2025 (p. 10) describen su generación durante el primer
+  año; la CG 3.6 la vincula a los pagos de las Aportaciones Comprometidas. El
+  modelo interpreta esta última como generación proporcional durante todo el
+  plazo. Declara esa diferencia: no atribuyas los $150/mes al folleto.
   El Fondo de Bono paga cargos (3.10.3) y solo se acredita al cumplir el plazo y
   las condiciones de 3.6. Una vez acreditado, queda por defecto en renta fija de
   corto plazo hasta recibir instrucciones del titular (3.6).
@@ -84,8 +95,14 @@ vuaa_mismo_bolsillo = sim_vuaa(0.10, con_refund=False, config=cfg)
 ```
 
 Ejecuta ese código desde un script en `src/`, o añade `src/` al `PYTHONPATH`.
-`fee_scale=1` usa los topes contractuales modelados, `0.5` la mitad y `0` mide
-el plan sin cargos. `Parametros` deriva la devolución anual y el porcentaje del
+`fee_scale=1` usa los topes contractuales modelados, `0.5` la mitad de **cada**
+cargo como sensibilidad hipotética y `0` mide el plan sin cargos. El folleto
+mantiene la gestión al tope, así que `fee_scale=0.5` no representa su tarifa.
+Para esa sensibilidad, usa `sim_ppr(0.10, TARIFA_FOLLETO_2025)` e importa la
+constante del mismo módulo. `src/sim_tarifa_folleto.py` genera el JSON con ambos
+escenarios cambiarios; no presenta esa mezcla de folleto 2025 y CG 2018 como
+tarifa comprobada para una póliza.
+`Parametros` deriva la devolución anual y el porcentaje del
 bono de las entradas. El caso base del código usa aportación de 5,000 MXN/mes,
 ingreso de 600,000 MXN/año, edad inicial 25, 40 años de horizonte y 25 años de
 Plazo Comprometido. **La tarifa ISR 2026 queda congelada en pesos nominales**;

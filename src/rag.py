@@ -205,10 +205,10 @@ def embed_query(q: str) -> np.ndarray:
 def fuse(bm25_scores: np.ndarray, dense_scores: np.ndarray, alpha: float = ALPHA) -> np.ndarray:
     """Mezcla de scores normalizados: alpha*bm25 + (1-alpha)*dense.
 
-    Elegida por evaluación sobre 10 consultas con respuesta conocida: 9/10 top-1
-    (vs 5/10 de RRF y 8/10 de BM25 solo). BM25 domina porque en este corpus legal
-    la evidencia léxica exacta casi siempre señala la sección correcta; el denso
-    cubre paráfrasis donde BM25 falla.
+    La evaluación exploratoria original no guardó consultas ni resultados;
+    sus cifras no son reproducibles y no se presentan como precisión validada.
+    La ponderación favorece coincidencias léxicas de cláusulas; el componente
+    denso aporta coincidencias semánticas para consultas parafraseadas.
     """
     b = bm25_scores / bm25_scores.max() if bm25_scores.max() > 1e-6 else None
     d = dense_scores / dense_scores.max() if dense_scores.max() > 1e-6 else None
