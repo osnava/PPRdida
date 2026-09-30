@@ -79,6 +79,25 @@ aportes**. El **0.25% de corretaje es un supuesto**, no una tarifa universal
 de las casas de bolsa ([Vanguard México, ficha de VUAA][vuaa];
 [BMV, perfil de VUAA][bmv]; [parámetros][modelo]; [costos simulados][resultados]).
 
+**¿Cuánto cobra la venta total del ejemplo?** Con peso estable y el mismo
+desembolso de bolsillo, el VUAA llega al año 40 con $27,304,100 antes de
+vender. El modelo cobra 0.25% + 16% de IVA **sobre todo ese saldo**, es decir,
+$79,182 de corretaje; quedan $27,224,918 antes del ISR. Cada compra mensual de
+$5,000 cuesta $14.50. En los 40 años, el desglose de los $271,192 de costos
+modelados es $6,960 de corretaje de compra, $185,050 de OCF y $79,182 de
+corretaje de venta ([cálculo][modelo]; [resultados base][resultados]). El OCF
+reduce el rendimiento dentro del ETF; no es una factura al vender
+([Vanguard, explicación de costos][vanguard-costos]).
+
+La tasa de 0.25% se mantiene fija en la simulación. En la práctica puede
+depender del intermediario y de tu historial de operaciones: por ejemplo,
+Actinver Trade publica tasas de 0.25% a 0.10% + IVA para mercado de capitales
+(que incluye ETFs), según el volumen operado en los 30 días anteriores. Una
+venta grande por sí sola no garantiza la tasa menor. El diferencial entre
+precio de compra y venta (*spread*) tampoco está incluido en el modelo
+([Actinver, guía de servicios, pp. 5 y 9][actinver-tarifas];
+[Vanguard, costos de ETF][vanguard-costos]).
+
 ## 3. Las dos trampas del interés compuesto
 
 Aquí está la intuición que este análisis tuvo que construir, porque el sentido
@@ -495,6 +514,7 @@ estudio (septiembre de 2026):
 | SAT/DOF, *RMF 2026* y *Anexo 8* | Tratamiento del PPR, regla 3.17.6; tarifa anual ISR 2026 | [RMF, regla 3.17.6][rmf] · [Anexo 8, tarifa anual][anexo8] |
 | INEGI, *UMA 2026*; Banxico, *UDI* | UMA diaria de $117.31; UDI de $8.826356 al 26-sep-2026 | [INEGI][uma] · [Banxico][udi] |
 | Vanguard México y BMV, *VUAA* | Fondo acumulativo, índice S&P 500, OCF de 0.07% y presencia en BMV | [Vanguard][vuaa] · [BMV][bmv] |
+| Actinver, *Guía de Servicios de Inversión* | Ejemplo de tasas escalonadas de corretaje e IVA en mercado de capitales | [Guía, pp. 5 y 9][actinver-tarifas] |
 | S&P Dow Jones Indices, *S&P 500* | Índice de referencia; el 10% anual de la simulación es un supuesto propio | [Ficha del índice][sp500] |
 
 **Cálculos reproducibles:** [modelo mensual][modelo], [resultados base][resultados],
@@ -522,6 +542,8 @@ la verificación por cláusula.
 [uma]: https://www.inegi.org.mx/contenidos/saladeprensa/boletines/2026/uma/uma2026.pdf
 [udi]: https://www.banxico.org.mx/tipcamb/llenarInflacionAction.do?idioma=sp&usarCache=false
 [vuaa]: https://www.vanguardmexico.com/en/product/resources/benchmarks/spdji
+[vanguard-costos]: https://investor.vanguard.com/investor-resources-education/education/expense-ratio
+[actinver-tarifas]: https://www.actinver.com/documents/74160/1977463/Bursanet%2BGuia%2Bde%2BServicios%2Bde%2BInversion.pdf/4097c6f2-a595-66b1-0769-0fc022098121?t=1636472018991
 [bmv]: https://www.bmv.com.mx/es/emisoras/perfil/VUAA-34305
 [sp500]: https://www.spglobal.com/spdji/en/indices/equity/sp-500/
 [modelo]: src/sim_ppr_vs_vuaa.py
