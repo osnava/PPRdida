@@ -71,7 +71,7 @@ trato tiene tres partes:
 
 **El VUAA** es la opción sin aseguradora: un ETF que sigue el índice S&P 500 de
 grandes empresas estadounidenses, lo compras en la bolsa mexicana a
-través de una casa de bolsa (GBM, Bursanet, …), y ya. Sin devolución del SAT,
+través de una casa de bolsa (GBM, Actinver Trade, …), y ya. Sin devolución del SAT,
 sin plazos. Tu costo: ~0.25% + IVA cada vez que compras o vendes y el 0.07%
 anual del fondo (OCF vigente de Vanguard México). En 40 años, comprar, mantener
 y vender suma **$0.27M con el mismo bolsillo** o **$0.33M con los mismos
@@ -89,14 +89,21 @@ corretaje de venta ([cálculo][modelo]; [resultados base][resultados]). El OCF
 reduce el rendimiento dentro del ETF; no es una factura al vender
 ([Vanguard, explicación de costos][vanguard-costos]).
 
-La tasa de 0.25% se mantiene fija en la simulación. En la práctica puede
-depender del intermediario y de tu historial de operaciones: por ejemplo,
-Actinver Trade publica tasas de 0.25% a 0.10% + IVA para mercado de capitales
-(que incluye ETFs), según el volumen operado en los 30 días anteriores. Una
-venta grande por sí sola no garantiza la tasa menor. El diferencial entre
-precio de compra y venta (*spread*) tampoco está incluido en el modelo
-([Actinver, guía de servicios, pp. 5 y 9][actinver-tarifas];
-[Vanguard, costos de ETF][vanguard-costos]).
+La tasa de 0.25% se mantiene fija en la simulación. Las plataformas de
+operación por cuenta propia publican escalones para las compraventas:
+
+| Plataforma | Historial que determina el escalón | Tasas publicadas, antes de IVA |
+|---|---|---|
+| [GBM Trading México][gbm-tarifas] | Promedio del monto operado en los últimos 3 meses | De 0.25% (hasta $1 millón) a 0.10% (más de $10 millones) |
+| [Actinver Trade][actinver-tarifas] | Monto acumulado de operaciones de capitales en los 30 días anteriores | De 0.25% (hasta $1 millón) a 0.10% (más de $10 millones) |
+
+Estos escalones se basan en operaciones recientes, no en el valor de la cartera
+ni en depósitos. Por eso, una venta grande en una sola orden no garantiza que
+esa misma venta reciba la tasa más baja. La tabla de Actinver basada en saldo
+o tamaño de la orden corresponde a su **servicio asesorado de Casa de Bolsa**,
+con otras condiciones ([guía de Actinver, p. 7][actinver-asesorado]). El
+diferencial entre precio de compra y venta (*spread*) tampoco está incluido en
+el modelo ([Vanguard, costos de ETF][vanguard-costos]).
 
 ## 3. Las dos trampas del interés compuesto
 
@@ -514,7 +521,8 @@ estudio (septiembre de 2026):
 | SAT/DOF, *RMF 2026* y *Anexo 8* | Tratamiento del PPR, regla 3.17.6; tarifa anual ISR 2026 | [RMF, regla 3.17.6][rmf] · [Anexo 8, tarifa anual][anexo8] |
 | INEGI, *UMA 2026*; Banxico, *UDI* | UMA diaria de $117.31; UDI de $8.826356 al 26-sep-2026 | [INEGI][uma] · [Banxico][udi] |
 | Vanguard México y BMV, *VUAA* | Fondo acumulativo, índice S&P 500, OCF de 0.07% y presencia en BMV | [Vanguard][vuaa] · [BMV][bmv] |
-| Actinver, *Guía de Servicios de Inversión* | Ejemplo de tasas escalonadas de corretaje e IVA en mercado de capitales | [Guía, pp. 5 y 9][actinver-tarifas] |
+| GBM, *Guía de Servicios de Inversión* | Corretaje escalonado de Trading México según el promedio operado en los últimos 3 meses, más IVA | [Guía, p. 19][gbm-tarifas] |
+| Actinver, *Guía de Servicios de Inversión* | Corretaje escalonado de Actinver Trade según operaciones de capitales en los 30 días anteriores, más IVA; servicio asesorado distinto | [Trade, p. 9][actinver-tarifas] · [asesorado, p. 7][actinver-asesorado] |
 | S&P Dow Jones Indices, *S&P 500* | Índice de referencia; el 10% anual de la simulación es un supuesto propio | [Ficha del índice][sp500] |
 
 **Cálculos reproducibles:** [modelo mensual][modelo], [resultados base][resultados],
@@ -543,7 +551,9 @@ la verificación por cláusula.
 [udi]: https://www.banxico.org.mx/tipcamb/llenarInflacionAction.do?idioma=sp&usarCache=false
 [vuaa]: https://www.vanguardmexico.com/en/product/resources/benchmarks/spdji
 [vanguard-costos]: https://investor.vanguard.com/investor-resources-education/education/expense-ratio
-[actinver-tarifas]: https://www.actinver.com/documents/74160/1977463/Bursanet%2BGuia%2Bde%2BServicios%2Bde%2BInversion.pdf/4097c6f2-a595-66b1-0769-0fc022098121?t=1636472018991
+[gbm-tarifas]: https://global.gbm.com/wp-content/uploads/2026/01/27210032/Guia-de-Servicios-GBM_V-1025-1.pdf#page=19
+[actinver-tarifas]: https://www.actinver.com/documents/74160/1977463/Bursanet%2BGuia%2Bde%2BServicios%2Bde%2BInversion.pdf/4097c6f2-a595-66b1-0769-0fc022098121?t=1636472018991#page=9
+[actinver-asesorado]: https://www.actinver.com/documents/74160/1977463/Bursanet%2BGuia%2Bde%2BServicios%2Bde%2BInversion.pdf/4097c6f2-a595-66b1-0769-0fc022098121?t=1636472018991#page=7
 [bmv]: https://www.bmv.com.mx/es/emisoras/perfil/VUAA-34305
 [sp500]: https://www.spglobal.com/spdji/en/indices/equity/sp-500/
 [modelo]: src/sim_ppr_vs_vuaa.py
